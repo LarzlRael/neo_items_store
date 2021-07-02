@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:neo_wallet/services/auth_services.dart';
 
 class ManagamentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final authservice = AuthService();
     return Scaffold(
       appBar: AppBar(
         title: Text('Jhoe Doe'),
@@ -11,8 +13,15 @@ class ManagamentPage extends StatelessWidget {
           IconButton(
             onPressed: () {},
             icon: Icon(Icons.grid_3x3_sharp),
-          )
+          ),
         ],
+        leading: IconButton(
+          onPressed: () {
+            authservice.logout();
+            Navigator.pushReplacementNamed(context, 'login');
+          },
+          icon: Icon(Icons.exit_to_app),
+        ),
       ),
       body: Container(
         /* padding: EdgeInsets.all(15), */

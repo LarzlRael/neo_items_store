@@ -1,6 +1,11 @@
-const { io } = require("../..");
+import { io } from '..';
 
-io.on('connection', (socket) => {
+
+
+
+
+
+io.on('connection', (socket: any) => {
 
     console.log('a user connected');
 
