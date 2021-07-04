@@ -8,16 +8,21 @@ export const sendAmount = async (req: Request, res: Response) => {
     const { amount, userOriginWallet, userTargetWallet } = req.body;
 
     const { uid } = req;
+
+
     /* verifyWallet(userOriginWallet, res); */
 
     if (verifyId(userOriginWallet) && verifyId(userTargetWallet)) {
 
+        verifyWallet(userTargetWallet, res);
+        verifyWallet(userOriginWallet, res);
 
         const newTransaction = new TransactionModel();
 
         newTransaction.amount = amount;
 
         newTransaction.originUser = uid;
+
 
         //TODO verificar si el id es valido y existe en la base de datos
         // check if the id is valid and exist in the database
@@ -26,9 +31,9 @@ export const sendAmount = async (req: Request, res: Response) => {
         newTransaction.userOriginWallet = userOriginWallet;
         newTransaction.userTargetWallet = userTargetWallet;
 
-        const newTransactionRaw = await newTransaction.save();
 
         const userTargetWAlletDB = await WalletModel.findById(userTargetWallet);
+
 
         const userOriginWAlletDB = await WalletModel.findById(userOriginWallet);
 
@@ -45,8 +50,14 @@ export const sendAmount = async (req: Request, res: Response) => {
         await userOriginWAlletDB!.save();
 
         //? add new amount 
+
+        newTransaction.destinyUser = userTargetWAlletDB!.idUser;
+
         userTargetWAlletDB!.balance = userTargetWAlletDB!.balance + amount;
         await userTargetWAlletDB!.save();
+
+        // save new transaction 
+        const newTransactionRaw = await newTransaction.save();
 
         return res.json({
             ok: true,
@@ -58,12 +69,48 @@ export const sendAmount = async (req: Request, res: Response) => {
     else {
         return res.json({
             ok: false,
-            msg: 'Veriifique las datos',
+            msg: 'Verifique las datos',
         });
     }
 }
 
 
-const verifyId = (id: any) => {
+export const getTransactionsByUser = async (req: Request, res: Response) => {
+
+    const { uid } = req;
+
+
+    const getuserTransaction = await TransactionModel.find(
+        {
+            $or: [{ originUser: uid }, { destinyUser: uid }],
+        }
+    );
+
+    res.json({
+        ok: true,
+        userTransactions: getuserTransaction
+    })
+}
+
+
+
+// 
+const verifyId = (id: any): boolean => {
     return mongoose.Types.ObjectId.isValid(id);
+}
+
+const verifyWallet = async (id: any, res: Response): Promise<boolean | Object> => {
+    const userOriginWAlletDB = await WalletModel.findById(id);
+
+    console.log(userOriginWAlletDB);
+
+    if (userOriginWAlletDB) {
+        return true;
+    } else {
+        return res.json({
+            ok: true,
+            msg: 'billetera no encontrada'
+        })
+    }
+
 }

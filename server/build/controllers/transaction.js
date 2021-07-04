@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendAmount = void 0;
+exports.getTransactionsByUser = exports.sendAmount = void 0;
 const transacionModel_1 = __importDefault(require("./../models/transacionModel"));
 const walletModel_1 = __importDefault(require("./../models/walletModel"));
 const mongoose_1 = __importDefault(require("mongoose"));
@@ -21,6 +21,8 @@ const sendAmount = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const { uid } = req;
     /* verifyWallet(userOriginWallet, res); */
     if (verifyId(userOriginWallet) && verifyId(userTargetWallet)) {
+        verifyWallet(userTargetWallet, res);
+        verifyWallet(userOriginWallet, res);
         const newTransaction = new transacionModel_1.default();
         newTransaction.amount = amount;
         newTransaction.originUser = uid;
@@ -28,7 +30,6 @@ const sendAmount = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         // check if the id is valid and exist in the database
         newTransaction.userOriginWallet = userOriginWallet;
         newTransaction.userTargetWallet = userTargetWallet;
-        const newTransactionRaw = yield newTransaction.save();
         const userTargetWAlletDB = yield walletModel_1.default.findById(userTargetWallet);
         const userOriginWAlletDB = yield walletModel_1.default.findById(userOriginWallet);
         // check if the amount is greater than the balance
@@ -42,8 +43,11 @@ const sendAmount = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         userOriginWAlletDB.balance = userOriginWAlletDB.balance - amount;
         yield userOriginWAlletDB.save();
         //? add new amount 
+        newTransaction.destinyUser = userTargetWAlletDB.idUser;
         userTargetWAlletDB.balance = userTargetWAlletDB.balance + amount;
         yield userTargetWAlletDB.save();
+        // save new transaction 
+        const newTransactionRaw = yield newTransaction.save();
         return res.json({
             ok: true,
             msg: 'Transaccion realizada con exito :D',
@@ -53,12 +57,37 @@ const sendAmount = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     else {
         return res.json({
             ok: false,
-            msg: 'Veriifique las datos',
+            msg: 'Verifique las datos',
         });
     }
 });
 exports.sendAmount = sendAmount;
+const getTransactionsByUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { uid } = req;
+    const getuserTransaction = yield transacionModel_1.default.find({
+        $or: [{ originUser: uid }, { destinyUser: uid }],
+    });
+    res.json({
+        ok: true,
+        userTransactions: getuserTransaction
+    });
+});
+exports.getTransactionsByUser = getTransactionsByUser;
+// 
 const verifyId = (id) => {
     return mongoose_1.default.Types.ObjectId.isValid(id);
 };
+const verifyWallet = (id, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userOriginWAlletDB = yield walletModel_1.default.findById(id);
+    console.log(userOriginWAlletDB);
+    if (userOriginWAlletDB) {
+        return true;
+    }
+    else {
+        return res.json({
+            ok: true,
+            msg: 'billetera no encontrada'
+        });
+    }
+});
 //# sourceMappingURL=transaction.js.map

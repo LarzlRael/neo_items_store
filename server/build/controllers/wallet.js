@@ -19,10 +19,11 @@ const createWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const { uid } = req;
         const newWallet = new walletModel_1.default();
         newWallet.idUser = uid;
+        newWallet.walletName = req.body.walletName;
         const newWalletCreated = yield newWallet.save();
         res.json({
             ok: true,
-            newWalletCreated
+            userWallets: newWalletCreated
         });
     }
     catch (error) {
@@ -33,10 +34,10 @@ exports.createWallet = createWallet;
 const viewUserWallets = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { uid } = req;
-        const newWallet = yield walletModel_1.default.find({ 'idUser': uid });
+        const userWallets = yield walletModel_1.default.find({ 'idUser': uid });
         res.json({
             ok: true,
-            newWallet
+            userWallets
         });
     }
     catch (error) {

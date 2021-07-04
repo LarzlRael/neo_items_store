@@ -13,6 +13,10 @@ const WalletSchema = new Schema({
         ref: USERS,
         required: true
     },
+    walletName:{
+        type: String,
+        required: true
+    },
     block: {
         type: Boolean,
         default: false,

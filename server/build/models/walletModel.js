@@ -23,6 +23,10 @@ const WalletSchema = new mongoose_1.Schema({
         ref: documents_1.USERS,
         required: true
     },
+    walletName: {
+        type: String,
+        required: true
+    },
     block: {
         type: Boolean,
         default: false,

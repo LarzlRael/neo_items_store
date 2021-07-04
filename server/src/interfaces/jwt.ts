@@ -6,6 +6,7 @@ export interface IPayload {
 export interface IWallet {
     _id: any;
     balance: number;
+    walletName: string;
     idUser: string;
     block: boolean;
 }

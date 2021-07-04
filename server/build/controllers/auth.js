@@ -82,4 +82,6 @@ const renewToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     });
 });
 exports.renewToken = renewToken;
+/* com.example.neo_wallet
+com.neo.neo_wallet */ 
 //# sourceMappingURL=auth.js.map

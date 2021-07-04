@@ -7,14 +7,16 @@ const middelwares_1 = require("../middlewares/middelwares");
 const validarJwt_1 = require("../middlewares/validarJwt");
 const router = express_1.Router();
 // send Amount
-// /send/transactions
+// /transactions/send/
 //amount, userTarget, userOriginWallet, userTargetWallet
 router.post('/send', [
     express_validator_1.check('amount', 'El monto es obligatorio').not().isEmpty().isNumeric(),
     express_validator_1.check('userOriginWallet', 'La billetar de origen es obligatorio').not().isEmpty(),
     express_validator_1.check('userTargetWallet', 'La billeta de destino es obligatorio').not().isEmpty(),
     middelwares_1.validarCampos,
-    validarJwt_1.validarJWT
+    validarJwt_1.validarJWT,
 ], transaction_1.sendAmount);
+///transactions/getransactions/
+router.get('/gettransactions', validarJwt_1.validarJWT, transaction_1.getTransactionsByUser);
 exports.default = router;
 //# sourceMappingURL=transaction.js.map

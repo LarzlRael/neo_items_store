@@ -6,6 +6,7 @@ import path from 'path';
 import authRoutes from './routes/auth';
 import walletRoutes from './routes/wallet';
 import transactionsRoutes from './routes/transaction';
+import qrRoutes from './routes/qr';
 
 //DB config
 require('./database/databaseConfig').dbConnection();
@@ -19,8 +20,9 @@ export const io = require('socket.io')(server);
 import './sockets/socket';
 
 
-//Lectura y parse de BODY
+app.set("view engine", "ejs");
 
+//Lectura y parse de BODY
 app.use(express.json());
 //Index server index
 const publicPath = path.resolve(__dirname, 'public');
@@ -28,9 +30,15 @@ app.use(express.static(publicPath));
 
 //routes
 
+app.get("/", (req, res) => {
+    res.render("index");
+});
+
 app.use('/auth', authRoutes);
 app.use('/wallet', walletRoutes);
 app.use('/transactions', transactionsRoutes);
+app.use('/qr', qrRoutes);
+
 
 
 server.listen(port, () => {

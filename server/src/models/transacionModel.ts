@@ -9,6 +9,11 @@ const TransactionSchema = new Schema({
         ref: USERS,
         required: true
     },
+    destinyUser: {
+        type: Schema.Types.ObjectId,
+        ref: USERS,
+        required: true
+    },
     userOriginWallet: {
         type: Schema.Types.ObjectId,
         ref: WALLET,
@@ -20,6 +25,7 @@ const TransactionSchema = new Schema({
         ref: WALLET,
         required: true
     },
+    
 
     amount: {
         type: Number,

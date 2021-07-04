@@ -19,6 +19,11 @@ const TransactionSchema = new mongoose_1.Schema({
         ref: documents_1.USERS,
         required: true
     },
+    destinyUser: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: documents_1.USERS,
+        required: true
+    },
     userOriginWallet: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: documents_1.WALLET,
