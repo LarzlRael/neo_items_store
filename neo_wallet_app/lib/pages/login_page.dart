@@ -15,7 +15,7 @@ class LoginPage extends StatelessWidget {
           child: Container(
             height: MediaQuery.of(context).size.height * 0.9,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Center(
                   child: Logo(title: 'N.E.O'),
@@ -34,7 +34,12 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-class _Form extends StatelessWidget {
+class _Form extends StatefulWidget {
+  @override
+  __FormState createState() => __FormState();
+}
+
+class __FormState extends State<_Form> {
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
 
@@ -42,7 +47,6 @@ class _Form extends StatelessWidget {
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
     return Container(
-      margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 30),
       child: Column(
         children: [
@@ -60,7 +64,7 @@ class _Form extends StatelessWidget {
             textController: passCtrl,
             isPassword: true,
           ),
-          ButtonBlue(
+          FatButton(
             title: 'Ingresar',
             onPressed: authService.autenticando
                 ? null

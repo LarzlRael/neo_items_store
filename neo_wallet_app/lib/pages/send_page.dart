@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:neo_wallet/widgets/wallet_status.dart';
 import 'package:neo_wallet/widgets/widgets.dart';
@@ -13,13 +16,13 @@ class SendPage extends StatelessWidget {
             showButton: false,
             walletHeightSize: 0.25,
           ),
-          containerElements(),
+          containerElements(context),
         ],
       ),
     );
   }
 
-  Widget containerElements() {
+  Widget containerElements(BuildContext context) {
     return Container(
         padding: EdgeInsets.all(15),
         child: Column(
@@ -29,17 +32,21 @@ class SendPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ButtonWithIcon(
-                    icon: Icons.qr_code,
-                    label: 'Scan',
-                    buttonBorderPrimary: true),
+                  icon: Icons.qr_code,
+                  label: 'Scan',
+                  buttonBorderPrimary: true,
+                  onPressed: () {},
+                ),
                 ButtonWithIcon(
-                    icon: Icons.qr_code,
-                    label: 'Paste',
-                    buttonBorderPrimary: true),
+                  icon: Icons.qr_code,
+                  label: 'Paste',
+                  buttonBorderPrimary: true,
+                  onPressed: () {},
+                ),
               ],
             ),
             _createInput(),
-            _sendButton(),
+            _sendButton(context),
           ],
         ));
   }
@@ -63,7 +70,7 @@ class SendPage extends StatelessWidget {
     );
   }
 
-  Widget _sendButton() {
+  Widget _sendButton(BuildContext context) {
     return Container(
       width: double.infinity,
       child: ElevatedButton(
@@ -71,7 +78,9 @@ class SendPage extends StatelessWidget {
           shape: StadiumBorder(),
           padding: EdgeInsets.symmetric(vertical: 15),
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, 'sendPage');
+        },
         child: Text('Enviar'),
       ),
     );

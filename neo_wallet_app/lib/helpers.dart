@@ -37,3 +37,44 @@ mostrarAlerta(BuildContext context, String titulo, String subtitulo) {
     ),
   );
 }
+
+mostrarAlertaCerrarSesion(BuildContext context, VoidCallback onPressed) {
+  if (Platform.isAndroid) {
+    return showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Cerrar sesión'),
+        content: Text('¿Esta seguro de cerrar sesion?'),
+        actions: [
+          MaterialButton(
+            child: Text('Cancelar'),
+            elevation: 5,
+            textColor: Colors.blue,
+            onPressed: () => Navigator.pop(context),
+          ),
+          MaterialButton(
+            child: Text('Si'),
+            elevation: 5,
+            textColor: Colors.blue,
+            onPressed: onPressed,
+          ),
+        ],
+      ),
+    );
+  }
+
+  showCupertinoDialog(
+    context: context,
+    builder: (_) => CupertinoAlertDialog(
+      title: Text('xd'),
+      content: Text('xd'),
+      actions: [
+        CupertinoDialogAction(
+          child: Text('ok'),
+          isDefaultAction: true,
+          onPressed: () => Navigator.pop(context),
+        ),
+      ],
+    ),
+  );
+}

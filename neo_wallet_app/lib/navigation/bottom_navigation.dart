@@ -45,10 +45,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
       },
       items: [
         BottomNavigationBarItem(
-            icon: Icon(Icons.wallet_membership_rounded), label: 'Wallets'),
+            icon: Icon(Icons.wallet_membership_rounded),
+            label: 'Transacciones'),
         BottomNavigationBarItem(
-            icon: Icon(Icons.wallet_giftcard), label: 'Items'),
-        BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Manage'),
+            icon: Icon(Icons.wallet_giftcard), label: 'Articulos'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.settings), label: 'Administrar'),
       ],
     );
   }

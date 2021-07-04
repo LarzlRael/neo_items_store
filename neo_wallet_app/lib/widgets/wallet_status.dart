@@ -56,11 +56,14 @@ class WalletStatus extends StatelessWidget {
                         label: 'Enviar',
                         icon: (Icons.send_and_archive_rounded),
                         buttonBorderPrimary: false,
+                        onPressed: () {},
                       ),
                       ButtonWithIcon(
-                          label: 'Recibir',
-                          icon: (Icons.qr_code),
-                          buttonBorderPrimary: false),
+                        label: 'Recibir',
+                        icon: (Icons.qr_code),
+                        buttonBorderPrimary: false,
+                        onPressed: () {},
+                      ),
                     ],
                   )
                 : Container()

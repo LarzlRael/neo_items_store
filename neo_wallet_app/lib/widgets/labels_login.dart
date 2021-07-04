@@ -29,9 +29,10 @@ class Labels extends StatelessWidget {
             Navigator.pushNamed(context, route);
           },
         ),
+        SizedBox(height: 5),
         Text(
-          'Terminos y condicones de uso',
-          style: TextStyle(fontWeight: FontWeight.w200),
+          'Términos y condiciones de uso',
+          style: TextStyle(fontWeight: FontWeight.w200, fontSize: 15),
         ),
       ],
     );

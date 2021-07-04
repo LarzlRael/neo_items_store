@@ -1,4 +1,4 @@
-package com.example.neo_wallet
+package com.neo.neo_wallet
 
 import io.flutter.embedding.android.FlutterActivity
 

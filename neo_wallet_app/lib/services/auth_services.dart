@@ -37,6 +37,8 @@ class AuthService with ChangeNotifier {
   bool get autenticando => this._authtecating;
 
   Future<bool> login(String email, String password) async {
+    this.autenticando = true;
+
     final data = {'email': email, 'password': password};
 
     final resp = await http.post(
@@ -47,7 +49,8 @@ class AuthService with ChangeNotifier {
 
     print(resp.body);
 
-    this._authtecating = false;
+    this.autenticando = false;
+
     if (resp.statusCode == 200) {
       final loginResponse = loginResponseFromJson(resp.body);
       this.usuario = loginResponse.usuario;
@@ -55,6 +58,34 @@ class AuthService with ChangeNotifier {
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future register(String email, String password, String name) async {
+    this.autenticando = true;
+
+    final data = {'email': email, 'password': password, 'name': name};
+
+    final resp = await http.post(
+      Uri.parse(
+        '${Enviroments.serverHttpUrl}/auth/register',
+      ),
+      headers: {'Content-type': 'application/json'},
+      body: jsonEncode(data),
+    );
+
+    print(resp.body);
+
+    this.autenticando = true;
+
+    if (resp.statusCode == 200) {
+      final loginResponse = loginResponseFromJson(resp.body);
+      this.usuario = loginResponse.usuario;
+      await this._saveToken(loginResponse.token);
+      return true;
+    } else {
+      final respBody = jsonDecode(resp.body);
+      return respBody['msg'];
     }
   }
 

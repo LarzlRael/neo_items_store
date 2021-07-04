@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
         routes: appRoutes,
         theme: ThemeData(
           brightness: Brightness.light,
+
           /* light theme settings */
         ),
         darkTheme: ThemeData(
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
           appBarTheme: AppBarTheme(
             backgroundColor: Color(0xff212B37),
           ),
+
           /* bottomNavigationBarTheme: (BottomNavigationBarThemeData(
             backgroundColor: Color(0xff212B37),
             selectedItemColor: Colors.white,

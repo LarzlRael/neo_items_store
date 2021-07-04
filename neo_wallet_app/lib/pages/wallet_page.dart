@@ -1,7 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:neo_wallet/models/transactions_response.dart';
+import 'package:neo_wallet/services/auth_services.dart';
+import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:neo_wallet/services/transactions_services.dart';
 import 'package:neo_wallet/widgets/widgets.dart';
 
-class WalletPage extends StatelessWidget {
+class WalletPage extends StatefulWidget {
+  @override
+  _WalletPageState createState() => _WalletPageState();
+}
+
+class _WalletPageState extends State<WalletPage> {
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  final transactionHistory = new TransactionsServices();
+  List<UserTransaction> userTransactions = [];
+
+  @override
+  void initState() {
+    this._loadTransactions();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,22 +41,25 @@ class WalletPage extends StatelessWidget {
           ),
           //
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.all(15),
-              scrollDirection: Axis.vertical,
-              children: [
-                /* _createInfoBloc(),
-                _createInfoBloc(),
-                _createInfoBloc(), */
-
-                _createInfoBloc(context),
-                _createInfoBloc(context),
-                _createInfoBloc(context),
-                _createInfoBloc(context),
-                _createInfoBloc(context),
-                _createInfoBloc(context),
-                _createInfoBloc(context),
-              ],
+            child: SmartRefresher(
+              controller: _refreshController,
+              child: ListView.builder(
+                padding: EdgeInsets.all(15),
+                scrollDirection: Axis.vertical,
+                itemCount: userTransactions.length,
+                itemBuilder: (BuildContext context, int i) {
+                  return _createInfoBloc(context, userTransactions[i]);
+                },
+                /* children: [
+                  /* _createInfoBloc(),
+                  _createInfoBloc(),
+                  _createInfoBloc(), */
+          
+                  
+                  
+                ], */
+              ),
+              onRefresh: _loadTransactions,
             ),
           ),
         ],
@@ -46,11 +71,12 @@ class WalletPage extends StatelessWidget {
     final mediaQuery = MediaQuery.of(context).size;
 
     final titleStyle = TextStyle(
-        color: Colors.white, fontSize: 26, fontWeight: FontWeight.w500);
-    final subTitleStyle = TextStyle(color: Colors.white, fontSize: 17);
+        color: Colors.white, fontSize: 23, fontWeight: FontWeight.w500);
+    final subTitleStyle = TextStyle(color: Colors.white, fontSize: 16);
 
     return Container(
-      height: mediaQuery.height * 0.33,
+      padding: EdgeInsets.all(15),
+      height: mediaQuery.height * 0.37,
       width: double.infinity,
       /* color: Colors.blue, */
       decoration: BoxDecoration(
@@ -88,11 +114,16 @@ class WalletPage extends StatelessWidget {
                   label: 'Enviar',
                   icon: (Icons.send_and_archive_rounded),
                   buttonBorderPrimary: false,
+                  onPressed: () => {Navigator.pushNamed(context, 'sendPage')},
                 ),
                 ButtonWithIcon(
-                    label: 'Recibir',
-                    icon: (Icons.qr_code),
-                    buttonBorderPrimary: false),
+                  label: 'Recibir',
+                  icon: (Icons.qr_code),
+                  buttonBorderPrimary: false,
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'newWallet');
+                  },
+                ),
               ],
             )
           ],
@@ -101,7 +132,10 @@ class WalletPage extends StatelessWidget {
     );
   }
 
-  Widget _createInfoBloc(BuildContext context) {
+  Widget _createInfoBloc(
+      BuildContext context, UserTransaction userTransaction) {
+    final authService = Provider.of<AuthService>(context);
+
     final color = Color(0xff7BC896);
 
     return Container(
@@ -129,13 +163,17 @@ class WalletPage extends StatelessWidget {
               Row(
                 children: [
                   Icon(
-                    Icons.arrow_circle_up,
+                    userTransaction.destinyUser == authService.usuario.uid
+                        ? Icons.arrow_circle_up
+                        : Icons.arrow_circle_down,
                     size: 35,
                     color: color,
                   ),
                   SizedBox(width: 5),
                   Text(
-                    'Sent',
+                    userTransaction.destinyUser == authService.usuario.uid
+                        ? 'Enviado'
+                        : 'Recibido',
                     style: TextStyle(fontSize: 18, color: color),
                   ),
                 ],
@@ -144,12 +182,14 @@ class WalletPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '01/05/2021, 14:33',
+                    /* '01/05/2021, 14:33', */
+                    '${userTransaction.createdAt.day}/${userTransaction.createdAt.month}/${userTransaction.createdAt.year}  ${userTransaction.createdAt.hour}:${userTransaction.createdAt.minute}',
                     style: TextStyle(fontSize: 13, color: Colors.white54),
                   ),
                   SizedBox(height: 7),
                   Text(
-                    '0x1750bab89...4fd626984e0',
+                    /* '0x1750bab89...4fd626984e0', */
+                    '${userTransaction.originUser}',
                     style: TextStyle(fontSize: 13, color: Colors.white54),
                   ),
                 ],
@@ -168,7 +208,8 @@ class WalletPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '0.025454641651515151 ETH',
+                  // amount
+                  '${userTransaction.amount} BOBS',
                   style: TextStyle(
                       fontSize: 14,
                       color: Colors.white,
@@ -184,5 +225,15 @@ class WalletPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _loadTransactions() async {
+    this.userTransactions = await transactionHistory.getUserTransactions();
+    setState(() {});
+    // monitor network fetch
+
+    await Future.delayed(Duration(milliseconds: 1000));
+
+    _refreshController.refreshCompleted();
   }
 }

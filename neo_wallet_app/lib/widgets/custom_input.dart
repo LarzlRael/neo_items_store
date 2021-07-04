@@ -26,8 +26,8 @@ class _CustomInputState extends State<CustomInput> {
     //
 
     return Container(
-      padding: EdgeInsets.only(top: 5, left: 20, bottom: 5, right: 20),
-      margin: EdgeInsets.only(bottom: 20),
+      padding: EdgeInsets.only(top: 0, left: 5, bottom: 0, right: 20),
+      margin: EdgeInsets.only(bottom: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         border: Border.all(color: Colors.white),

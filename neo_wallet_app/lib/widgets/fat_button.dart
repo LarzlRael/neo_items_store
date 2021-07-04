@@ -1,11 +1,11 @@
 part of 'widgets.dart';
 
-class ButtonBlue extends StatelessWidget {
+class FatButton extends StatelessWidget {
   final String title;
   final VoidCallback? onPressed;
 
   @override
-  const ButtonBlue({
+  const FatButton({
     required this.title,
     required this.onPressed,
     /* required this.onPressed, */
@@ -13,17 +13,18 @@ class ButtonBlue extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        elevation: 2,
+        elevation: 4,
         primary: Colors.blue,
         shape: StadiumBorder(),
       ),
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 20),
+        padding: EdgeInsets.symmetric(vertical: 15),
         width: double.infinity,
         child: Center(
           child: Text(title,
               style: TextStyle(
                 color: Colors.white,
+                fontSize: 15,
               )),
         ),
       ),
