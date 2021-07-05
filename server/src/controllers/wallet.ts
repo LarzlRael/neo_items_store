@@ -24,11 +24,11 @@ export const createWallet = async (req: Request, res: Response) => {
     }
 
 }
-export const viewUserWallets = async (req: Request, res: Response) => {
+export const getWalletsByUser = async (req: Request, res: Response) => {
 
     try {
         const { uid } = req;
-        const userWallets = await WalletModel.find({ 'idUser': uid });
+        const userWallets = await WalletModel.find({ 'idUser': uid }).sort('-createdAt');
 
         res.json({
             ok: true,

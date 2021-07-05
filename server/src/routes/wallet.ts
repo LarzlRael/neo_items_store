@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { createWallet, viewUserWallets } from '../controllers/wallet';
+import { createWallet, getWalletsByUser } from '../controllers/wallet';
 import { validarCampos } from '../middlewares/middelwares';
 import { validarJWT } from '../middlewares/validarJwt';
 
@@ -13,6 +13,6 @@ router.post('/createwallet',
     ], createWallet);
 
 // wallet/walletByUsers
-router.get('/walletbyuser', validarJWT, viewUserWallets);
+router.get('/walletbyuser', validarJWT, getWalletsByUser);
 
 export default router;

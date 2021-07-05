@@ -19,16 +19,13 @@ const port = process.env.PORT;
 const server = require('http').createServer(app);
 exports.io = require('socket.io')(server);
 require("./sockets/socket");
-app.set("view engine", "ejs");
+/* app.set("view engine", "ejs"); */
 //Lectura y parse de BODY
 app.use(express_1.default.json());
 //Index server index
 const publicPath = path_1.default.resolve(__dirname, 'public');
 app.use(express_1.default.static(publicPath));
 //routes
-app.get("/", (req, res) => {
-    res.render("index");
-});
 app.use('/auth', auth_1.default);
 app.use('/wallet', wallet_1.default);
 app.use('/transactions', transaction_1.default);

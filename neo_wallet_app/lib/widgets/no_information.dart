@@ -15,7 +15,7 @@ class NoInformation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
+      padding: EdgeInsets.all(40),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -25,11 +25,14 @@ class NoInformation extends StatelessWidget {
             Text(message),
             SizedBox(height: 15),
             showButton
-                ? ButtonWithIcon(
-                    label: "Recibir ",
-                    icon: Icons.qr_code,
-                    buttonBorderPrimary: true,
-                    onPressed: () {},
+                ? Container(
+                    width: double.infinity,
+                    child: ButtonWithIcon(
+                      label: "Recibir",
+                      icon: Icons.qr_code,
+                      buttonBorderPrimary: true,
+                      onPressed: () {},
+                    ),
                   )
                 : Container(),
           ],

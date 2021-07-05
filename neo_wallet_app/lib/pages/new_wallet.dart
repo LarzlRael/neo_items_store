@@ -11,7 +11,7 @@ class NewWallet extends StatefulWidget {
 }
 
 class _NewWalletState extends State<NewWallet> {
-  List<UserWallet> userWallets = [];
+  final walletServies = WalletServices();
 
   @override
   void initState() {
@@ -21,6 +21,8 @@ class _NewWalletState extends State<NewWallet> {
 
   @override
   Widget build(BuildContext context) {
+    walletServies.getUserWalletsBloc();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Nombre de usuario'),
@@ -29,11 +31,15 @@ class _NewWalletState extends State<NewWallet> {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              itemCount: this.userWallets.length,
-              scrollDirection: Axis.vertical,
-              itemBuilder: (BuildContext context, int i) {
-                return _showWallet(context, userWallets[i]);
+            child: StreamBuilder(
+              stream: walletServies.userWalletsStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<UserWallet>> snapshot) {
+                if (snapshot.hasData) {
+                  return _createListWallets(snapshot.data!);
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
               },
             ),
           ),
@@ -46,6 +52,16 @@ class _NewWalletState extends State<NewWallet> {
           ),
         ],
       ),
+    );
+  }
+
+  ListView _createListWallets(List<UserWallet> userWallets) {
+    return ListView.builder(
+      itemCount: userWallets.length,
+      scrollDirection: Axis.vertical,
+      itemBuilder: (BuildContext context, int i) {
+        return _showWallet(context, userWallets[i]);
+      },
     );
   }
 
@@ -136,8 +152,6 @@ class _NewWalletState extends State<NewWallet> {
   }
 
   void _loadWallets() async {
-    final walletServies = WalletServices();
-    this.userWallets = await walletServies.getUserTransactions();
-    setState(() {});
+    await walletServies.getUsersWallets();
   }
 }

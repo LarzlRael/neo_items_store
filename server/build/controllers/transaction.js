@@ -66,7 +66,7 @@ const getTransactionsByUser = (req, res) => __awaiter(void 0, void 0, void 0, fu
     const { uid } = req;
     const getuserTransaction = yield transacionModel_1.default.find({
         $or: [{ originUser: uid }, { destinyUser: uid }],
-    });
+    }).sort('-createdAt ');
     res.json({
         ok: true,
         userTransactions: getuserTransaction
@@ -79,7 +79,6 @@ const verifyId = (id) => {
 };
 const verifyWallet = (id, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userOriginWAlletDB = yield walletModel_1.default.findById(id);
-    console.log(userOriginWAlletDB);
     if (userOriginWAlletDB) {
         return true;
     }

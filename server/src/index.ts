@@ -20,7 +20,7 @@ export const io = require('socket.io')(server);
 import './sockets/socket';
 
 
-app.set("view engine", "ejs");
+/* app.set("view engine", "ejs"); */
 
 //Lectura y parse de BODY
 app.use(express.json());
@@ -30,9 +30,6 @@ app.use(express.static(publicPath));
 
 //routes
 
-app.get("/", (req, res) => {
-    res.render("index");
-});
 
 app.use('/auth', authRoutes);
 app.use('/wallet', walletRoutes);

@@ -11,6 +11,6 @@ router.post('/createwallet', [
     express_validator_1.check('walletName', 'Ingrese nombre de lal billetera').not().isEmpty(), validarJwt_1.validarJWT, middelwares_1.validarCampos
 ], wallet_1.createWallet);
 // wallet/walletByUsers
-router.get('/walletbyuser', validarJwt_1.validarJWT, wallet_1.viewUserWallets);
+router.get('/walletbyuser', validarJwt_1.validarJWT, wallet_1.getWalletsByUser);
 exports.default = router;
 //# sourceMappingURL=wallet.js.map

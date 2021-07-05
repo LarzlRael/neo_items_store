@@ -16,22 +16,16 @@ class _WalletPageState extends State<WalletPage> {
       RefreshController(initialRefresh: false);
 
   final transactionHistory = new TransactionsServices();
-  List<UserTransaction> userTransactions = [];
-
-  @override
-  void initState() {
-    this._loadTransactions();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
+    transactionHistory.getUserTransactionsBloc();
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _createWalletData(context),
-
           Container(
             margin: EdgeInsets.only(top: 15, left: 15, bottom: 15),
             child: Text(
@@ -43,21 +37,19 @@ class _WalletPageState extends State<WalletPage> {
           Expanded(
             child: SmartRefresher(
               controller: _refreshController,
-              child: ListView.builder(
-                padding: EdgeInsets.all(15),
-                scrollDirection: Axis.vertical,
-                itemCount: userTransactions.length,
-                itemBuilder: (BuildContext context, int i) {
-                  return _createInfoBloc(context, userTransactions[i]);
+
+              /*  */
+
+              child: StreamBuilder(
+                stream: transactionHistory.transactionsStream,
+                builder:
+                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  if (snapshot.hasData) {
+                    return createTransaction(snapshot.data);
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
                 },
-                /* children: [
-                  /* _createInfoBloc(),
-                  _createInfoBloc(),
-                  _createInfoBloc(), */
-          
-                  
-                  
-                ], */
               ),
               onRefresh: _loadTransactions,
             ),
@@ -114,7 +106,10 @@ class _WalletPageState extends State<WalletPage> {
                   label: 'Enviar',
                   icon: (Icons.send_and_archive_rounded),
                   buttonBorderPrimary: false,
-                  onPressed: () => {Navigator.pushNamed(context, 'sendPage')},
+                  onPressed: () => {
+                    /* Navigator.pushNamed(context, 'sendPage'); */
+                    Navigator.pushNamed(context, 'usersWallets'),
+                  },
                 ),
                 ButtonWithIcon(
                   label: 'Recibir',
@@ -163,7 +158,7 @@ class _WalletPageState extends State<WalletPage> {
               Row(
                 children: [
                   Icon(
-                    userTransaction.destinyUser == authService.usuario.uid
+                    userTransaction.destinyUser != authService.usuario.uid
                         ? Icons.arrow_circle_up
                         : Icons.arrow_circle_down,
                     size: 35,
@@ -171,7 +166,7 @@ class _WalletPageState extends State<WalletPage> {
                   ),
                   SizedBox(width: 5),
                   Text(
-                    userTransaction.destinyUser == authService.usuario.uid
+                    userTransaction.destinyUser != authService.usuario.uid
                         ? 'Enviado'
                         : 'Recibido',
                     style: TextStyle(fontSize: 18, color: color),
@@ -227,13 +222,29 @@ class _WalletPageState extends State<WalletPage> {
     );
   }
 
+  Widget createTransaction(List<UserTransaction> userTransaction) {
+    return ListView.builder(
+      padding: EdgeInsets.all(15),
+      scrollDirection: Axis.vertical,
+      itemCount: userTransaction.length,
+      itemBuilder: (BuildContext context, int i) =>
+          _createInfoBloc(context, userTransaction[i]),
+      /* children: [
+                    /* _createInfoBloc(),
+                    _createInfoBloc(),
+                    _createInfoBloc(), */
+                        
+                    
+                    
+                  ], */
+    );
+  }
+
   void _loadTransactions() async {
-    this.userTransactions = await transactionHistory.getUserTransactions();
-    setState(() {});
+    transactionHistory.getUserTransactions();
+
     // monitor network fetch
-
     await Future.delayed(Duration(milliseconds: 1000));
-
     _refreshController.refreshCompleted();
   }
 }

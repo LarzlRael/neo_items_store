@@ -80,11 +80,11 @@ export const getTransactionsByUser = async (req: Request, res: Response) => {
     const { uid } = req;
 
 
-    const getuserTransaction = await TransactionModel.find(
-        {
-            $or: [{ originUser: uid }, { destinyUser: uid }],
-        }
-    );
+    const getuserTransaction = await TransactionModel.find({
+
+        $or: [{ originUser: uid }, { destinyUser: uid }],
+
+    }).sort('-createdAt ');
 
     res.json({
         ok: true,
@@ -101,8 +101,6 @@ const verifyId = (id: any): boolean => {
 
 const verifyWallet = async (id: any, res: Response): Promise<boolean | Object> => {
     const userOriginWAlletDB = await WalletModel.findById(id);
-
-    console.log(userOriginWAlletDB);
 
     if (userOriginWAlletDB) {
         return true;

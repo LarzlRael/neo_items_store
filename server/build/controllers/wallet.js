@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.viewUserWallets = exports.createWallet = void 0;
+exports.getWalletsByUser = exports.createWallet = void 0;
 const walletModel_1 = __importDefault(require("../models/walletModel"));
 const createWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -31,10 +31,10 @@ const createWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.createWallet = createWallet;
-const viewUserWallets = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getWalletsByUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { uid } = req;
-        const userWallets = yield walletModel_1.default.find({ 'idUser': uid });
+        const userWallets = yield walletModel_1.default.find({ 'idUser': uid }).sort('-createdAt');
         res.json({
             ok: true,
             userWallets
@@ -44,5 +44,5 @@ const viewUserWallets = (req, res) => __awaiter(void 0, void 0, void 0, function
         console.log(error);
     }
 });
-exports.viewUserWallets = viewUserWallets;
+exports.getWalletsByUser = getWalletsByUser;
 //# sourceMappingURL=wallet.js.map

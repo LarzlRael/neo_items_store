@@ -12,20 +12,14 @@ class ManagamentPage extends StatefulWidget {
 }
 
 class _ManagamentPageState extends State<ManagamentPage> {
-  List<UserWallet> userWallets = [];
-
-  @override
-  void initState() {
-    _loadWallets();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final walletServies = WalletServices();
     final authService = Provider.of<AuthService>(context);
 
     final usuario = authService.usuario;
-    final authservice = AuthService();
+
+    walletServies.getUserWalletsBloc();
 
     return Scaffold(
       appBar: AppBar(
@@ -55,11 +49,17 @@ class _ManagamentPageState extends State<ManagamentPage> {
               height: 10,
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: this.userWallets.length,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (BuildContext context, int i) {
-                  return _createWallet(userWallets[i]);
+              child: StreamBuilder(
+                stream: walletServies.userWalletsStream,
+                builder:
+                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  if (snapshot.hasData) {
+                    return _createListWallets(snapshot.data);
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
                 },
               ),
             ),
@@ -84,6 +84,16 @@ class _ManagamentPageState extends State<ManagamentPage> {
     );
   }
 
+  ListView _createListWallets(List<UserWallet> userWallets) {
+    return ListView.builder(
+      itemCount: userWallets.length,
+      scrollDirection: Axis.vertical,
+      itemBuilder: (BuildContext context, int i) {
+        return _createWallet(userWallets[i]);
+      },
+    );
+  }
+
   Container _createWallet(UserWallet wallet) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -104,14 +114,24 @@ class _ManagamentPageState extends State<ManagamentPage> {
         title: Text('Wallet name'),
         subtitle: Text(wallet.walletName),
         trailing: Icon(Icons.edit),
+        onTap: () {
+          if (wallet.balance > 0) {
+            Navigator.pushNamed(context, 'sendPage', arguments: wallet);
+          } else {
+            final snackBar = SnackBar(
+              //TODO change the color
+              content: Text('Esta billetera no tiene saldo'),
+              action: SnackBarAction(
+                label: 'ok',
+                onPressed: () {},
+              ),
+            );
+
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        },
       ),
     );
-  }
-
-  void _loadWallets() async {
-    final walletServies = WalletServices();
-    this.userWallets = await walletServies.getUserTransactions();
-    setState(() {});
   }
 
   void logOut() {
