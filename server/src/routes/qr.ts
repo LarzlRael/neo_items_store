@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { generateQR } from '../controllers/qrController';
+import { generateQR, generateQRLogo } from '../controllers/qrController';
 import { validarCampos } from '../middlewares/middelwares';
 import { validarJWT } from '../middlewares/validarJwt';
 

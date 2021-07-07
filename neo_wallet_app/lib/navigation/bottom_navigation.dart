@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:neo_wallet/pages/items_page.dart';
 import 'package:neo_wallet/pages/managament_page.dart';
+import 'package:neo_wallet/pages/user_transactions_history_page.dart';
 import 'package:neo_wallet/pages/wallet_page.dart';
 
 class BottomNavigation extends StatefulWidget {
@@ -25,7 +26,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
       case 0:
         return WalletPage();
       case 1:
-        return ItemsPage();
+        return UserTransactionsHistoryPage();
+      /* case 1:
+        return ItemsPage(); */
+
       case 2:
         return ManagamentPage();
 

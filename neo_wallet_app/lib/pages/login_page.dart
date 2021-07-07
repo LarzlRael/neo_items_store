@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:neo_wallet/services/auth_services.dart';
+import 'package:neo_wallet/services/socket_service.dart';
 import 'package:neo_wallet/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -46,6 +47,8 @@ class __FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
+    final socketService = Provider.of<SocketService>(context, listen: false);
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 30),
       child: Column(
@@ -76,7 +79,7 @@ class __FormState extends State<_Form> {
                     final loginOk = await authService.login(
                         emailCtrl.text.trim(), passCtrl.text.trim());
                     if (loginOk) {
-                      /* socketService.connect(); */
+                      socketService.connect();
                       Navigator.pushReplacementNamed(context, 'home');
                     } else {
                       //crear alerta

@@ -7,7 +7,7 @@ import 'package:neo_wallet/pages/new_wallet.dart';
 import 'package:neo_wallet/pages/qr_page.dart';
 import 'package:neo_wallet/pages/register_page.dart';
 import 'package:neo_wallet/pages/send_page.dart';
-import 'package:neo_wallet/pages/transaccion_details.dart';
+import 'package:neo_wallet/pages/user_transactions_history_page.dart';
 
 final Map<String, Widget Function(BuildContext)> appRoutes = {
   /* Register and login  */
@@ -17,7 +17,7 @@ final Map<String, Widget Function(BuildContext)> appRoutes = {
   //? Bottom navigation pages
   'home': (_) => BottomNavigation(),
   'loading': (_) => LoadingPage(),
-  'transactionDetails': (_) => TransaccionDetails(),
+  'transactionHistory': (_) => UserTransactionsHistoryPage(),
 
   // ?
   'sendPage': (_) => SendPage(),

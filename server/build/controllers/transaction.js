@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTransactionsByUser = exports.sendAmount = void 0;
+exports.getTransactionsHistory = exports.getTransactionsByUser = exports.sendAmount = void 0;
 const transacionModel_1 = __importDefault(require("./../models/transacionModel"));
 const walletModel_1 = __importDefault(require("./../models/walletModel"));
 const mongoose_1 = __importDefault(require("mongoose"));
@@ -89,4 +89,12 @@ const verifyWallet = (id, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
     }
 });
+const getTransactionsHistory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const transactionsHistory = yield transacionModel_1.default.find().sort('-createdAt');
+    res.json({
+        ok: true,
+        userTransactions: transactionsHistory
+    });
+});
+exports.getTransactionsHistory = getTransactionsHistory;
 //# sourceMappingURL=transaction.js.map

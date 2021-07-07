@@ -9,7 +9,6 @@ export const sendAmount = async (req: Request, res: Response) => {
 
     const { uid } = req;
 
-
     /* verifyWallet(userOriginWallet, res); */
 
     if (verifyId(userOriginWallet) && verifyId(userTargetWallet)) {
@@ -110,5 +109,17 @@ const verifyWallet = async (id: any, res: Response): Promise<boolean | Object> =
             msg: 'billetera no encontrada'
         })
     }
+
+}
+
+export const getTransactionsHistory = async (req: Request, res: Response) => {
+
+    const transactionsHistory = await TransactionModel.find().sort('-createdAt');
+
+    res.json({
+        ok: true,
+        userTransactions: transactionsHistory
+    })
+
 
 }

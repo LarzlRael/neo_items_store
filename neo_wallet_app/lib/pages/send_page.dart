@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:neo_wallet/helpers.dart';
 import 'package:neo_wallet/models/wallets_users_response.dart';
+import 'package:neo_wallet/services/socket_service.dart';
 import 'package:neo_wallet/services/transactions_services.dart';
 import 'package:neo_wallet/widgets/wallet_status.dart';
 import 'package:neo_wallet/widgets/widgets.dart';
+import 'package:clipboard/clipboard.dart';
 
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:provider/provider.dart';
 
 class SendPage extends StatefulWidget {
   @override
@@ -18,10 +21,19 @@ class _SendPageState extends State<SendPage> {
 
   TextEditingController walletDirectionToSend = TextEditingController();
   TextEditingController amount = TextEditingController();
+  late SocketService socketService;
 
   double _currentSliderValue = 0;
 
   late UserWallet walletArgument;
+
+  @override
+  void initState() {
+    socketService = Provider.of<SocketService>(context, listen: false);
+    socketService.socket
+        .on('transaction-real-time', socketService.listenTransaction);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +46,25 @@ class _SendPageState extends State<SendPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              WalletStatus(
-                showButton: false,
-                walletHeightSize: 0.25,
+              Stack(
+                children: [
+                  WalletStatus(
+                    showButton: false,
+                    walletHeightSize: 0.25,
+                  ),
+                  Positioned(
+                    top: 30,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        /* size: 40, */
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ],
               ),
               containerElements(context),
             ],
@@ -53,7 +81,8 @@ class _SendPageState extends State<SendPage> {
           children: [
             Text('Billetera: ${walletArgument.walletName}'),
             Text('Saldo Actual: ${walletArgument.balance}'),
-            _createInput(walletDirectionToSend, 'Ingrese direccion de recibo'),
+            _createInput(walletDirectionToSend, 'Ingrese direccion de recibo',
+                TextInputType.text),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -67,7 +96,7 @@ class _SendPageState extends State<SendPage> {
                   icon: Icons.paste,
                   label: 'Paste',
                   buttonBorderPrimary: false,
-                  onPressed: () {},
+                  onPressed: pasteValue,
                 ),
               ],
             ),
@@ -76,14 +105,14 @@ class _SendPageState extends State<SendPage> {
             ),
             Text('Enviar : ${this._currentSliderValue}'),
             _createSlider(walletArgument.balance),
-            _createInput(amount, 'Saldo'),
+            _createInput(amount, 'Saldo', TextInputType.number),
             _sendButton(context),
           ],
         ));
   }
 
-  Container _createInput(
-      TextEditingController editingController, String placeHolder) {
+  Container _createInput(TextEditingController editingController,
+      String placeHolder, TextInputType keyboardType) {
     return Container(
       margin: EdgeInsets.only(bottom: 20, top: 20),
       padding: EdgeInsets.only(top: 0, left: 15, bottom: 0, right: 20),
@@ -95,6 +124,7 @@ class _SendPageState extends State<SendPage> {
       ),
       child: TextField(
         controller: editingController,
+        keyboardType: keyboardType,
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: placeHolder,
@@ -139,11 +169,12 @@ class _SendPageState extends State<SendPage> {
       value: _currentSliderValue,
       min: 0,
       max: balance.toDouble(),
-      divisions: 5,
+      /* divisions: 5, */
       label: _currentSliderValue.round().toString(),
       onChanged: (double value) {
         setState(() {
-          _currentSliderValue = value;
+          _currentSliderValue = value.ceilToDouble();
+          this.amount.text = _currentSliderValue.toString();
         });
       },
     );
@@ -151,16 +182,31 @@ class _SendPageState extends State<SendPage> {
 
   void sendAmount() async {
     final transactionsServices = TransactionsServices();
+
+    if (this.walletDirectionToSend.text.length == 0) {
+      return mostrarAlerta(context, 'Error',
+          'Hubo un error en la transaccion, revise la direccion de envio');
+    }
+
     final respOK = await transactionsServices.sendAmountToServer(
       amount: this._currentSliderValue.toInt(),
       userOriginWallet: this.walletArgument.id,
       userTargetWallet: this.walletDirectionToSend.text,
     );
-    if (respOK) {
+    if (respOK.ok) {
+      socketService.emit('transaction-real-time', (respOK.newTransactionRaw));
+
       Navigator.pushNamed(context, 'home');
     } else {
       mostrarAlerta(context, 'Error',
           'Hubo un error en la transaccion, revise la direccion de envio');
     }
+  }
+
+  void pasteValue() async {
+    final value = await FlutterClipboard.paste();
+    setState(() {
+      this.walletDirectionToSend.text = value.length != 0 ? value : '';
+    });
   }
 }

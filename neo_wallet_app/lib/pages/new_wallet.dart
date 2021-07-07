@@ -142,7 +142,6 @@ class _NewWalletState extends State<NewWallet> {
 
   onSubmitNewWallet(
       BuildContext context, TextEditingController nameWallet) async {
-    print(nameWallet.text.trim());
     final walletService = WalletServices();
     final respOk = await walletService.createNewWallet(nameWallet.text.trim());
 

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { getTransactionsByUser, sendAmount } from '../controllers/transaction';
+import { getTransactionsByUser, sendAmount, getTransactionsHistory } from '../controllers/transaction';
 import { validarCampos } from '../middlewares/middelwares';
 import { validarJWT } from '../middlewares/validarJwt';
 
@@ -25,5 +25,8 @@ router.post('/send',
 
 ///transactions/getransactions/
 router.get('/gettransactions', validarJWT, getTransactionsByUser);
+
+//History
+router.get('/transactionsHistory', validarJWT, getTransactionsHistory);
 
 export default router;

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:neo_wallet/enviroments/variables_enviroments.dart'
     as Enviroments;
+import 'package:neo_wallet/models/send_amout_response.dart';
 import 'package:neo_wallet/models/transactions_response.dart';
 
 import 'auth_services.dart';
@@ -43,7 +44,7 @@ class TransactionsServices {
     return transactionsResponse.userTransactions;
   }
 
-  Future<bool> sendAmountToServer({
+  Future<SendAmoutResponse> sendAmountToServer({
     required int amount,
     required String userOriginWallet,
     required String userTargetWallet,
@@ -62,11 +63,23 @@ class TransactionsServices {
       body: jsonEncode(data),
     );
 
-    print(resp.body);
+    final datax = sendAmoutResponseFromJson(resp.body);
 
-    if (jsonDecode(resp.body)['ok']) {
-      return true;
-    }
-    return false;
+    return datax;
+  }
+
+  Future<List<UserTransaction>> getUsersHistoryTransactions() async {
+    final resp = await http.get(
+      Uri.parse(
+          '${Enviroments.serverHttpUrl}/transactions/transactionsHistory/'),
+      headers: {
+        'Content-type': 'application/json',
+        'x-token': await AuthService.getToken(),
+      },
+    );
+
+    final transactionsResponse = transactionsResponseFromJson(resp.body);
+
+    return transactionsResponse.userTransactions;
   }
 }

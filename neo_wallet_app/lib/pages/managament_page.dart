@@ -29,7 +29,6 @@ class _ManagamentPageState extends State<ManagamentPage> {
           IconButton(
             icon: Icon(Icons.grid_3x3_sharp),
             onPressed: () {
-              print('go a la otra pagina we');
               Navigator.pushNamed(context, 'newWallet');
             },
           ),
@@ -111,8 +110,8 @@ class _ManagamentPageState extends State<ManagamentPage> {
         ],
       ),
       child: ListTile(
-        title: Text('Wallet name'),
-        subtitle: Text(wallet.walletName),
+        title: Text(wallet.walletName),
+        subtitle: Text('${wallet.balance}'),
         trailing: Icon(Icons.edit),
         onTap: () {
           if (wallet.balance > 0) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neo_wallet/services/socket_service.dart';
 
 import 'package:provider/provider.dart';
 
@@ -24,8 +25,10 @@ class LoadingPage extends StatelessWidget {
   Future checkLoginState(BuildContext context) async {
     final authService = Provider.of<AuthService>(context, listen: false);
     final autenticado = await authService.isLoggenIn();
+    final socketService = Provider.of<SocketService>(context, listen: false);
 
     if (autenticado) {
+      socketService.connect();
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(

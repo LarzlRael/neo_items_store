@@ -18,5 +18,7 @@ router.post('/send', [
 ], transaction_1.sendAmount);
 ///transactions/getransactions/
 router.get('/gettransactions', validarJwt_1.validarJWT, transaction_1.getTransactionsByUser);
+//History
+router.get('/transactionsHistory', validarJwt_1.validarJWT, transaction_1.getTransactionsHistory);
 exports.default = router;
 //# sourceMappingURL=transaction.js.map

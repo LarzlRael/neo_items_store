@@ -47,8 +47,6 @@ class AuthService with ChangeNotifier {
       headers: {'Content-type': 'application/json'},
     );
 
-    print(resp.body);
-
     this.autenticando = false;
 
     if (resp.statusCode == 200) {
@@ -73,8 +71,6 @@ class AuthService with ChangeNotifier {
       headers: {'Content-type': 'application/json'},
       body: jsonEncode(data),
     );
-
-    print(resp.body);
 
     this.autenticando = true;
 
