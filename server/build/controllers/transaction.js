@@ -15,14 +15,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTransactionsHistory = exports.getTransactionsByUser = exports.sendAmount = void 0;
 const transacionModel_1 = __importDefault(require("./../models/transacionModel"));
 const walletModel_1 = __importDefault(require("./../models/walletModel"));
+const usuario_1 = __importDefault(require("./../models/usuario"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const pushNotification_1 = require("../helpers/pushNotification");
 const sendAmount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { amount, userOriginWallet, userTargetWallet } = req.body;
     const { uid } = req;
     /* verifyWallet(userOriginWallet, res); */
     if (verifyId(userOriginWallet) && verifyId(userTargetWallet)) {
-        verifyWallet(userTargetWallet, res);
-        verifyWallet(userOriginWallet, res);
+        yield verifyWallet(userTargetWallet, res);
+        yield verifyWallet(userOriginWallet, res);
         const newTransaction = new transacionModel_1.default();
         newTransaction.amount = amount;
         newTransaction.originUser = uid;
@@ -48,6 +50,9 @@ const sendAmount = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         yield userTargetWAlletDB.save();
         // save new transaction 
         const newTransactionRaw = yield newTransaction.save();
+        const usersDevices = yield getDevicesUserDestiny(userTargetWAlletDB.idUser);
+        const userNameOrigin = yield getOriginUser(userOriginWAlletDB === null || userOriginWAlletDB === void 0 ? void 0 : userOriginWAlletDB.idUser);
+        yield pushNotification_1.sendPushNotification(usersDevices, userNameOrigin, amount);
         return res.json({
             ok: true,
             msg: 'Transaccion realizada con exito :D',
@@ -55,9 +60,9 @@ const sendAmount = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
     else {
-        return res.json({
+        return res.status(403).json({
             ok: false,
-            msg: 'Verifique las datos',
+            msg: 'Verifique los datos'
         });
     }
 });
@@ -97,4 +102,12 @@ const getTransactionsHistory = (req, res) => __awaiter(void 0, void 0, void 0, f
     });
 });
 exports.getTransactionsHistory = getTransactionsHistory;
+const getDevicesUserDestiny = (idUserDestiny) => __awaiter(void 0, void 0, void 0, function* () {
+    const userDevicesId = yield usuario_1.default.findById(idUserDestiny);
+    return userDevicesId.devices;
+});
+const getOriginUser = (idUserOrigin) => __awaiter(void 0, void 0, void 0, function* () {
+    const userOriginInfo = yield usuario_1.default.findById(idUserOrigin);
+    return userOriginInfo === null || userOriginInfo === void 0 ? void 0 : userOriginInfo.name;
+});
 //# sourceMappingURL=transaction.js.map

@@ -14,7 +14,7 @@ __1.io.on('connection', (socket) => {
     console.log('a user connected');
     socket.on('transaction-real-time', (payload) => __awaiter(void 0, void 0, void 0, function* () {
         console.log('emitiendo los valores');
-        socket.emit('transaction-real-time', payload);
+        __1.io.emit('transaction-real-time', payload);
     }));
     socket.on('testing', () => {
         console.log('tesint this ');

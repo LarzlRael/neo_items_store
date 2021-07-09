@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import TransactionModel from './../models/transacionModel';
 import WalletModel from './../models/walletModel';
+import UserModel from './../models/usuario';
 import mongoose from 'mongoose';
+import { sendPushNotification } from '../helpers/pushNotification';
+import { IUser } from '../interfaces/jwt';
 
 export const sendAmount = async (req: Request, res: Response) => {
 
@@ -13,8 +16,8 @@ export const sendAmount = async (req: Request, res: Response) => {
 
     if (verifyId(userOriginWallet) && verifyId(userTargetWallet)) {
 
-        verifyWallet(userTargetWallet, res);
-        verifyWallet(userOriginWallet, res);
+        await verifyWallet(userTargetWallet, res);
+        await verifyWallet(userOriginWallet, res);
 
         const newTransaction = new TransactionModel();
 
@@ -58,6 +61,13 @@ export const sendAmount = async (req: Request, res: Response) => {
         // save new transaction 
         const newTransactionRaw = await newTransaction.save();
 
+        const usersDevices = await getDevicesUserDestiny(userTargetWAlletDB!.idUser);
+        const userNameOrigin = await getOriginUser(userOriginWAlletDB?.idUser!);
+
+        await sendPushNotification(usersDevices, userNameOrigin, amount);
+
+
+
         return res.json({
             ok: true,
             msg: 'Transaccion realizada con exito :D',
@@ -66,9 +76,9 @@ export const sendAmount = async (req: Request, res: Response) => {
 
     }
     else {
-        return res.json({
+        return res.status(403).json({
             ok: false,
-            msg: 'Verifique las datos',
+            msg: 'Verifique los datos'
         });
     }
 }
@@ -122,4 +132,15 @@ export const getTransactionsHistory = async (req: Request, res: Response) => {
     })
 
 
+}
+
+const getDevicesUserDestiny = async (idUserDestiny: string): Promise<String[] | undefined> => {
+    const userDevicesId = await UserModel.findById(idUserDestiny);
+
+    return userDevicesId!.devices;
+}
+
+const getOriginUser = async (idUserOrigin: string) => {
+    const userOriginInfo = await UserModel.findById(idUserOrigin);
+    return userOriginInfo?.name;
 }

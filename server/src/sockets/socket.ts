@@ -11,7 +11,7 @@ io.on('connection', (socket: Socket) => {
     socket.on('transaction-real-time', async (payload) => {
 
         console.log('emitiendo los valores');
-        socket.emit('transaction-real-time', payload);
+        io.emit('transaction-real-time', payload);
         
     });
 

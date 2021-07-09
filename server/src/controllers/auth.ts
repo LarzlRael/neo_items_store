@@ -50,14 +50,14 @@ export const login = async (req: Request, res: Response) => {
     const userExist = await Usuario.findOne({ email });
 
     if (!userExist) {
-        return res.json({
+        return res.status(403).json({
             ok: false,
             msg: 'EL usuario no existe'
         });
     }
     const validPassword = bcrypt.compareSync(password, userExist.password!);
     if (!validPassword) {
-        return res.status(400).json({
+        return res.status(403).json({
             ok: false,
             msg: 'Contraseña incorrecta'
         });
@@ -89,7 +89,19 @@ export const renewToken = async (req: Request, res: Response) => {
     });
 }
 
+export const saveNewDevice = async (req: Request, res: Response) => {
 
+    const { uid } = req;
+    const { deviceId } = req.body;
+    const userExist = await Usuario.findById(uid);
 
-/* com.example.neo_wallet
-com.neo.neo_wallet */
+    userExist?.devices?.push(deviceId);
+    console.log(userExist);
+    const updateUser = userExist?.save();
+
+    res.json({
+        ok: true,
+        updateUser
+    });
+}
+

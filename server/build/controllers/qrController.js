@@ -25,10 +25,10 @@ const generateQR = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
     const srcImage = yield qrcode_1.default.toDataURL(url, {
         scale: 10,
-        color: {
+        /* color: {
             dark: '#ffffff',
             light: '#1B242D',
-        },
+        }, */
         margin: 1,
     });
     const onlyBase64Png = srcImage.split(',');

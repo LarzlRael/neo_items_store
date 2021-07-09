@@ -14,10 +14,10 @@ export const generateQR = async (req: Request, res: Response) => {
     }
     const srcImage = await QRCode.toDataURL(url, {
         scale: 10,
-        color: {
+        /* color: {
             dark: '#ffffff',
             light: '#1B242D',
-        },
+        }, */
         margin:1,
 
     });

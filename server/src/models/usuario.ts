@@ -21,6 +21,9 @@ const UserSchema = new Schema<IUser>({
         type: Boolean,
         default: false
     },
+    devices: [
+        { type: String },
+    ]
 });
 
 UserSchema.method('toJSON', function () {

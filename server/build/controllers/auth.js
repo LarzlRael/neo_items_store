@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.renewToken = exports.login = exports.registerUser = void 0;
+exports.saveNewDevice = exports.renewToken = exports.login = exports.registerUser = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const usuario_1 = __importDefault(require("../models/usuario"));
 const jwt_1 = require("../helpers/jwt");
@@ -48,14 +48,14 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { password, email } = req.body;
     const userExist = yield usuario_1.default.findOne({ email });
     if (!userExist) {
-        return res.json({
+        return res.status(403).json({
             ok: false,
             msg: 'EL usuario no existe'
         });
     }
     const validPassword = bcryptjs_1.default.compareSync(password, userExist.password);
     if (!validPassword) {
-        return res.status(400).json({
+        return res.status(403).json({
             ok: false,
             msg: 'Contraseña incorrecta'
         });
@@ -82,6 +82,18 @@ const renewToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     });
 });
 exports.renewToken = renewToken;
-/* com.example.neo_wallet
-com.neo.neo_wallet */ 
+const saveNewDevice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { uid } = req;
+    const { deviceId } = req.body;
+    const userExist = yield usuario_1.default.findById(uid);
+    (_a = userExist === null || userExist === void 0 ? void 0 : userExist.devices) === null || _a === void 0 ? void 0 : _a.push(deviceId);
+    console.log(userExist);
+    const updateUser = userExist === null || userExist === void 0 ? void 0 : userExist.save();
+    res.json({
+        ok: true,
+        updateUser
+    });
+});
+exports.saveNewDevice = saveNewDevice;
 //# sourceMappingURL=auth.js.map

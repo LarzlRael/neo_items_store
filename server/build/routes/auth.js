@@ -17,6 +17,11 @@ router.post('/login', [
     express_validator_1.check('password', 'La contraseña is obligatoria').not().isEmpty(),
     middelwares_1.validarCampos
 ], auth_1.login);
+router.post('/saveNewDevice', [
+    express_validator_1.check('deviceId', 'ingrese id de dispositivo').not().isEmpty(),
+    middelwares_1.validarCampos,
+    validarJwt_1.validarJWT
+], auth_1.saveNewDevice);
 router.get('/renew', validarJwt_1.validarJWT, auth_1.renewToken);
 exports.default = router;
 //# sourceMappingURL=auth.js.map

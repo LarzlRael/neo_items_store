@@ -30,6 +30,9 @@ const UserSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false
     },
+    devices: [
+        { type: String },
+    ]
 });
 UserSchema.method('toJSON', function () {
     const _a = this.toObject(), { __v, _id, password } = _a, object = __rest(_a, ["__v", "_id", "password"]);

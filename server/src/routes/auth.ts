@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { check } from "express-validator";
 
-import { registerUser, login, renewToken } from "../controllers/auth";
-import { getTransactionsByUser } from "../controllers/transaction";
+import { registerUser, login, renewToken, saveNewDevice } from '../controllers/auth';
+
 import { validarCampos } from "../middlewares/middelwares";
 import { validarJWT } from '../middlewares/validarJwt';
 
@@ -21,6 +21,13 @@ router.post('/login', [
     check('password', 'La contraseña is obligatoria').not().isEmpty(),
     validarCampos
 ], login);
+
+router.post('/saveNewDevice', [
+
+    check('deviceId', 'ingrese id de dispositivo').not().isEmpty(),
+    validarCampos,
+    validarJWT
+], saveNewDevice);
 
 
 

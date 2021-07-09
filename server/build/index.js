@@ -17,11 +17,7 @@ require('./database/databaseConfig').dbConnection();
 const port = process.env.PORT;
 //Node server
 const server = require('http').createServer(app);
-exports.io = require('socket.io')(server, {
-    cors: {
-        origin: '*',
-    }
-});
+exports.io = require('socket.io')(server);
 require("./sockets/socket");
 /* app.set("view engine", "ejs"); */
 //Lectura y parse de BODY

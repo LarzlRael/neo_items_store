@@ -15,11 +15,7 @@ const port = process.env.PORT;
 //Node server
 
 const server = require('http').createServer(app);
-export const io = require('socket.io')(server, {
-    cors: {
-        origin: '*',
-    }
-});
+export const io = require('socket.io')(server);
 import './sockets/socket';
 
 
