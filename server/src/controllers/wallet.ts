@@ -2,7 +2,6 @@ import { Request, Response, } from 'express';
 
 
 import WalletModel from '../models/walletModel';
-import User from '../models/usuario';
 
 
 export const createWallet = async (req: Request, res: Response) => {

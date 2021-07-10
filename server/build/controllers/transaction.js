@@ -15,11 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTransactionsHistory = exports.getTransactionsByUser = exports.sendAmount = void 0;
 const transacionModel_1 = __importDefault(require("./../models/transacionModel"));
 const walletModel_1 = __importDefault(require("./../models/walletModel"));
-const usuario_1 = __importDefault(require("./../models/usuario"));
+const userModel_1 = __importDefault(require("../models/userModel"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const pushNotification_1 = require("../helpers/pushNotification");
 const sendAmount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { amount, userOriginWallet, userTargetWallet } = req.body;
+    const { amount, userOriginWallet, userTargetWallet, userOriginName } = req.body;
     const { uid } = req;
     /* verifyWallet(userOriginWallet, res); */
     if (verifyId(userOriginWallet) && verifyId(userTargetWallet)) {
@@ -28,8 +28,6 @@ const sendAmount = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const newTransaction = new transacionModel_1.default();
         newTransaction.amount = amount;
         newTransaction.originUser = uid;
-        //TODO verificar si el id es valido y existe en la base de datos
-        // check if the id is valid and exist in the database
         newTransaction.userOriginWallet = userOriginWallet;
         newTransaction.userTargetWallet = userTargetWallet;
         const userTargetWAlletDB = yield walletModel_1.default.findById(userTargetWallet);
@@ -48,11 +46,11 @@ const sendAmount = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         newTransaction.destinyUser = userTargetWAlletDB.idUser;
         userTargetWAlletDB.balance = userTargetWAlletDB.balance + amount;
         yield userTargetWAlletDB.save();
-        // save new transaction 
+        //? save new transaction 
         const newTransactionRaw = yield newTransaction.save();
+        //? Send Push notifications
         const usersDevices = yield getDevicesUserDestiny(userTargetWAlletDB.idUser);
-        const userNameOrigin = yield getOriginUser(userOriginWAlletDB === null || userOriginWAlletDB === void 0 ? void 0 : userOriginWAlletDB.idUser);
-        yield pushNotification_1.sendPushNotification(usersDevices, userNameOrigin, amount);
+        yield pushNotification_1.sendPushNotification(usersDevices, userOriginName, amount);
         return res.json({
             ok: true,
             msg: 'Transaccion realizada con exito :D',
@@ -103,11 +101,11 @@ const getTransactionsHistory = (req, res) => __awaiter(void 0, void 0, void 0, f
 });
 exports.getTransactionsHistory = getTransactionsHistory;
 const getDevicesUserDestiny = (idUserDestiny) => __awaiter(void 0, void 0, void 0, function* () {
-    const userDevicesId = yield usuario_1.default.findById(idUserDestiny);
+    const userDevicesId = yield userModel_1.default.findById(idUserDestiny);
     return userDevicesId.devices;
 });
-const getOriginUser = (idUserOrigin) => __awaiter(void 0, void 0, void 0, function* () {
-    const userOriginInfo = yield usuario_1.default.findById(idUserOrigin);
-    return userOriginInfo === null || userOriginInfo === void 0 ? void 0 : userOriginInfo.name;
-});
+/* const getOriginUser = async (idUserOrigin: string) => {
+    const userOriginInfo = await UserModel.findById(idUserOrigin);
+    return userOriginInfo?.name;
+} */ 
 //# sourceMappingURL=transaction.js.map

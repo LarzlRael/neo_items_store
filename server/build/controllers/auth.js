@@ -14,19 +14,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.saveNewDevice = exports.renewToken = exports.login = exports.registerUser = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const usuario_1 = __importDefault(require("../models/usuario"));
+const userModel_1 = __importDefault(require("../models/userModel"));
 const jwt_1 = require("../helpers/jwt");
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
-        const existeEmail = yield usuario_1.default.findOne({ email });
+        const existeEmail = yield userModel_1.default.findOne({ email });
         if (existeEmail) {
             return res.status(400).json({
                 ok: false,
                 msg: 'EL correo ya fue registrado'
             });
         }
-        const usuario = new usuario_1.default(req.body);
+        const usuario = new userModel_1.default(req.body);
         //Encriptar contraseña
         const salt = bcryptjs_1.default.genSaltSync();
         usuario.password = bcryptjs_1.default.hashSync(password, salt);
@@ -46,7 +46,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.registerUser = registerUser;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { password, email } = req.body;
-    const userExist = yield usuario_1.default.findOne({ email });
+    const userExist = yield userModel_1.default.findOne({ email });
     if (!userExist) {
         return res.status(403).json({
             ok: false,
@@ -74,7 +74,7 @@ const renewToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     // generar un nuevo JWT, generarJWT
     const token = yield jwt_1.generarJWT(uid);
     // obtener el suaurio por el UID, Usuario.findbyId...
-    const usuario = yield usuario_1.default.findById(uid);
+    const usuario = yield userModel_1.default.findById(uid);
     res.json({
         ok: true,
         usuario,
@@ -83,17 +83,36 @@ const renewToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.renewToken = renewToken;
 const saveNewDevice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     const { uid } = req;
     const { deviceId } = req.body;
-    const userExist = yield usuario_1.default.findById(uid);
-    (_a = userExist === null || userExist === void 0 ? void 0 : userExist.devices) === null || _a === void 0 ? void 0 : _a.push(deviceId);
-    console.log(userExist);
-    const updateUser = userExist === null || userExist === void 0 ? void 0 : userExist.save();
-    res.json({
-        ok: true,
-        updateUser
-    });
+    const userExist = yield userModel_1.default.findById(uid);
+    const userDevices = userExist.devices;
+    yield vertifyUserBearer(deviceId);
+    if (userDevices.indexOf(deviceId) === -1) {
+        userDevices.push(deviceId);
+        yield (userExist === null || userExist === void 0 ? void 0 : userExist.save());
+        console.log('registrando nuevo id');
+        res.json({
+            ok: true,
+            msg: 'nuevo id de dispositivo registrado'
+        });
+    }
+    else {
+        res.json({
+            ok: false,
+            msg: 'El id ya fue registado'
+        });
+    }
 });
 exports.saveNewDevice = saveNewDevice;
+const vertifyUserBearer = (idDevice) => __awaiter(void 0, void 0, void 0, function* () {
+    const userExist = yield userModel_1.default.find({ devices: { $in: [idDevice] } });
+    if (userExist.length == 0) {
+        return;
+    }
+    ;
+    const filterDevices = userExist[0].devices.filter((device) => idDevice != device);
+    userExist[0].devices = filterDevices;
+    yield userExist[0].save();
+});
 //# sourceMappingURL=auth.js.map

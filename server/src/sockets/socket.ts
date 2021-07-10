@@ -5,7 +5,7 @@ import { io } from '..';
 
 io.on('connection', (socket: Socket) => {
 
-    console.log('a user connected');
+/*     console.log('a user connected'); */
 
 
     socket.on('transaction-real-time', async (payload) => {
@@ -22,6 +22,6 @@ io.on('connection', (socket: Socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('user disconnected');
+        /* console.log('user disconnected'); */
     });
 });

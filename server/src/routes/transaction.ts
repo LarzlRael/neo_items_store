@@ -15,9 +15,10 @@ router.post('/send',
         check(
             'amount', 'El monto es obligatorio').not().isEmpty().isNumeric(),
 
-        check('userOriginWallet', 'La billetar de origen es obligatorio').not().isEmpty(),
+        check('userOriginWallet', 'La billeta de origen es obligatorio').not().isEmpty(),
 
         check('userTargetWallet', 'La billeta de destino es obligatorio').not().isEmpty(),
+        check('userOriginName', 'Debes proveer el nombre del usuario de origen').not().isEmpty(),
 
         validarCampos,
         validarJWT, 

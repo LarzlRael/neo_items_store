@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
 __1.io.on('connection', (socket) => {
-    console.log('a user connected');
+    /*     console.log('a user connected'); */
     socket.on('transaction-real-time', (payload) => __awaiter(void 0, void 0, void 0, function* () {
         console.log('emitiendo los valores');
         __1.io.emit('transaction-real-time', payload);
@@ -20,7 +20,7 @@ __1.io.on('connection', (socket) => {
         console.log('tesint this ');
     });
     socket.on('disconnect', () => {
-        console.log('user disconnected');
+        /* console.log('user disconnected'); */
     });
 });
 //# sourceMappingURL=socket.js.map

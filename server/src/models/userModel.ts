@@ -22,7 +22,9 @@ const UserSchema = new Schema<IUser>({
         default: false
     },
     devices: [
-        { type: String },
+        {
+            type: String,
+        },
     ]
 });
 

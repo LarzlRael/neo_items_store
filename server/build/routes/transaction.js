@@ -11,8 +11,9 @@ const router = express_1.Router();
 //amount, userTarget, userOriginWallet, userTargetWallet
 router.post('/send', [
     express_validator_1.check('amount', 'El monto es obligatorio').not().isEmpty().isNumeric(),
-    express_validator_1.check('userOriginWallet', 'La billetar de origen es obligatorio').not().isEmpty(),
+    express_validator_1.check('userOriginWallet', 'La billeta de origen es obligatorio').not().isEmpty(),
     express_validator_1.check('userTargetWallet', 'La billeta de destino es obligatorio').not().isEmpty(),
+    express_validator_1.check('userOriginName', 'Debes proveer el nombre del usuario de origen').not().isEmpty(),
     middelwares_1.validarCampos,
     validarJwt_1.validarJWT,
 ], transaction_1.sendAmount);

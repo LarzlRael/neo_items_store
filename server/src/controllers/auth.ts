@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 
-import Usuario from '../models/usuario';
+import Usuario from '../models/userModel';
 import { generarJWT } from '../helpers/jwt';
 
 
@@ -95,13 +95,43 @@ export const saveNewDevice = async (req: Request, res: Response) => {
     const { deviceId } = req.body;
     const userExist = await Usuario.findById(uid);
 
-    userExist?.devices?.push(deviceId);
-    console.log(userExist);
-    const updateUser = userExist?.save();
+    const userDevices = userExist!.devices;
 
-    res.json({
-        ok: true,
-        updateUser
-    });
+    await vertifyUserBearer(deviceId);
+
+    if (userDevices!.indexOf(deviceId) === -1) {
+        userDevices!.push(deviceId)
+        await userExist?.save();
+        
+        console.log('registrando nuevo id');
+
+        res.json({
+            ok: true,
+            msg: 'nuevo id de dispositivo registrado'
+        });
+    } else {
+        res.json({
+            ok: false,
+            msg: 'El id ya fue registado'
+        });
+    }
+
 }
 
+const vertifyUserBearer = async (idDevice: string) => {
+
+    const userExist = await Usuario.find({ devices: { $in: [idDevice] } });
+
+    if (userExist.length == 0) {
+        return;
+    };
+
+    const filterDevices = userExist[0]!.devices!.filter((device) => idDevice != device);
+
+
+    userExist[0].devices = filterDevices;
+
+    await userExist[0].save();
+
+
+}

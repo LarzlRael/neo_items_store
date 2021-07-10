@@ -31,7 +31,9 @@ const UserSchema = new mongoose_1.Schema({
         default: false
     },
     devices: [
-        { type: String },
+        {
+            type: String,
+        },
     ]
 });
 UserSchema.method('toJSON', function () {

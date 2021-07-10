@@ -1,14 +1,13 @@
 import { Request, Response } from 'express';
 import TransactionModel from './../models/transacionModel';
 import WalletModel from './../models/walletModel';
-import UserModel from './../models/usuario';
+import UserModel from '../models/userModel';
 import mongoose from 'mongoose';
 import { sendPushNotification } from '../helpers/pushNotification';
-import { IUser } from '../interfaces/jwt';
 
 export const sendAmount = async (req: Request, res: Response) => {
 
-    const { amount, userOriginWallet, userTargetWallet } = req.body;
+    const { amount, userOriginWallet, userTargetWallet,userOriginName } = req.body;
 
     const { uid } = req;
 
@@ -24,11 +23,6 @@ export const sendAmount = async (req: Request, res: Response) => {
         newTransaction.amount = amount;
 
         newTransaction.originUser = uid;
-
-
-        //TODO verificar si el id es valido y existe en la base de datos
-        // check if the id is valid and exist in the database
-
 
         newTransaction.userOriginWallet = userOriginWallet;
         newTransaction.userTargetWallet = userTargetWallet;
@@ -58,13 +52,14 @@ export const sendAmount = async (req: Request, res: Response) => {
         userTargetWAlletDB!.balance = userTargetWAlletDB!.balance + amount;
         await userTargetWAlletDB!.save();
 
-        // save new transaction 
+        //? save new transaction 
         const newTransactionRaw = await newTransaction.save();
 
+        //? Send Push notifications
         const usersDevices = await getDevicesUserDestiny(userTargetWAlletDB!.idUser);
-        const userNameOrigin = await getOriginUser(userOriginWAlletDB?.idUser!);
 
-        await sendPushNotification(usersDevices, userNameOrigin, amount);
+
+        await sendPushNotification(usersDevices, userOriginName, amount);
 
 
 
@@ -140,7 +135,7 @@ const getDevicesUserDestiny = async (idUserDestiny: string): Promise<String[] | 
     return userDevicesId!.devices;
 }
 
-const getOriginUser = async (idUserOrigin: string) => {
+/* const getOriginUser = async (idUserOrigin: string) => {
     const userOriginInfo = await UserModel.findById(idUserOrigin);
     return userOriginInfo?.name;
-}
+} */
