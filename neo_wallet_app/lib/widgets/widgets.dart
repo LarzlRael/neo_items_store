@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:neo_wallet/models/transactions_response.dart';
 import 'package:neo_wallet/services/auth_services.dart';
 import 'package:provider/provider.dart';
+import 'package:animate_do/animate_do.dart';
 
 part 'button_with_icon.dart';
 part 'no_information.dart';

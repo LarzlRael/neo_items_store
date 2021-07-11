@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:neo_wallet/pages/items_page.dart';
+
 import 'package:neo_wallet/pages/managament_page.dart';
 import 'package:neo_wallet/pages/user_transactions_history_page.dart';
 import 'package:neo_wallet/pages/wallet_page.dart';
@@ -12,6 +12,7 @@ class BottomNavigation extends StatefulWidget {
 class _BottomNavigationState extends State<BottomNavigation> {
   int currentIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

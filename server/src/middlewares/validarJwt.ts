@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
-import { IPayload } from '../interfaces/jwt';
+import { IPayload } from '../interfaces/interfaces';
 
 export const validarJWT = (req: Request, res: Response, next: any) => {
 

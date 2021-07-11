@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:neo_wallet/enviroments/variables_enviroments.dart'
     as Enviroment;
-import 'package:neo_wallet/models/transactions_response.dart';
+
 import 'package:neo_wallet/services/auth_services.dart';
-import 'package:neo_wallet/services/transactions_services.dart';
-import 'package:neo_wallet/widgets/widgets.dart';
+
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 enum ServerStatus {
@@ -22,11 +21,6 @@ class SocketService with ChangeNotifier {
   Function get emit => this._socket.emit;
 
   ServerStatus get serverStatus => this._serverStatus;
-
-  late TransactionsServices _transactionsService = TransactionsServices();
-  List<HistoryUsersTransactions> _transactions = [];
-
-  List<HistoryUsersTransactions> get transactions => _transactions;
 
   void connect() async {
     final token = await AuthService.getToken();
@@ -59,7 +53,7 @@ class SocketService with ChangeNotifier {
     });
   }
 
-  void loadHistory() async {
+  /*  void loadHistory() async {
     print('cargando historial');
     List<UserTransaction> loadTransactions =
         await _transactionsService.getUsersHistoryTransactions();
@@ -68,6 +62,10 @@ class SocketService with ChangeNotifier {
 
     final history = loadTransactions.map((h) => HistoryUsersTransactions(
           userTransaction: h,
+          animationController: AnimationController(
+            vsync: this,
+            duration: Duration(milliseconds: 0),
+          )..forward(),
         ));
     /* setState(() {
       this._transactions.insertAll(0, history);
@@ -77,11 +75,11 @@ class SocketService with ChangeNotifier {
   }
 
   void listenTransaction(payload) {
-    print('sockets ON');
+    print('sockets ON $payload');
     final payloadAsObje = UserTransaction.fromJson(payload);
 
     final newHistoryUsew = new HistoryUsersTransactions(
-      userTransaction: payloadAsObje,
+      userTransaction: payloadAsObje, animationController: null,
     );
 
     this._transactions.insert(0, newHistoryUsew);
@@ -90,5 +88,5 @@ class SocketService with ChangeNotifier {
 
   void disconnect() {
     this._socket.disconnect();
-  }
+  } */
 }

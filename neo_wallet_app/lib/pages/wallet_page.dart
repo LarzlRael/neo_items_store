@@ -35,23 +35,20 @@ class _WalletPageState extends State<WalletPage> {
           ),
           //
           Expanded(
-            child: SmartRefresher(
-              controller: _refreshController,
+            /*  */
 
-              /*  */
-
-              child: StreamBuilder(
-                stream: transactionHistory.transactionsStream,
-                builder:
-                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                  if (snapshot.hasData) {
-                    return createTransaction(snapshot.data);
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                },
-              ),
-              onRefresh: _loadTransactions,
+            child: StreamBuilder(
+              stream: transactionHistory.transactionsStream,
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.hasData) {
+                  return SmartRefresher(
+                      onRefresh: _loadTransactions,
+                      controller: _refreshController,
+                      child: createTransaction(snapshot.data));
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
             ),
           ),
         ],
@@ -116,7 +113,8 @@ class _WalletPageState extends State<WalletPage> {
                   icon: (Icons.qr_code),
                   buttonBorderPrimary: false,
                   onPressed: () {
-                    Navigator.pushNamed(context, 'newWallet');
+                    Navigator.pushNamed(context, 'newWallet',
+                        arguments: 'wallet_page');
                   },
                 ),
               ],

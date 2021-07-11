@@ -1,6 +1,7 @@
 
 import { Schema, model } from "mongoose";
-import { IUser } from "../interfaces/jwt";
+import { IUser } from "../interfaces/interfaces";
+import { WALLET } from "./documents";
 
 
 const UserSchema = new Schema<IUser>({
@@ -21,6 +22,12 @@ const UserSchema = new Schema<IUser>({
         type: Boolean,
         default: false
     },
+    wallets: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: WALLET,
+        }
+    ],
     devices: [
         {
             type: String,

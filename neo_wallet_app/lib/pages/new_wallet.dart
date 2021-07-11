@@ -1,9 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:neo_wallet/helpers.dart';
 import 'package:neo_wallet/models/wallets_users_response.dart';
+import 'package:neo_wallet/services/auth_services.dart';
 import 'package:neo_wallet/services/wallet_services.dart';
 import 'package:neo_wallet/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 class NewWallet extends StatefulWidget {
   @override
@@ -11,46 +14,43 @@ class NewWallet extends StatefulWidget {
 }
 
 class _NewWalletState extends State<NewWallet> {
-  final walletServies = WalletServices();
-
-  @override
-  void initState() {
-    _loadWallets();
-    super.initState();
-  }
+  late String? from;
+  late AuthService authService;
 
   @override
   Widget build(BuildContext context) {
-    walletServies.getUserWalletsBloc();
+    authService = Provider.of<AuthService>(context);
+    this.from = ModalRoute.of(context)!.settings.arguments as String;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nombre de usuario'),
+        title: Text(this.from != 'wallet_page'
+            ? '${authService.usuario.name}'
+            : 'Selecciona una billetera'),
         centerTitle: true,
       ),
       body: Column(
         children: [
           Expanded(
-            child: StreamBuilder(
-              stream: walletServies.userWalletsStream,
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<UserWallet>> snapshot) {
-                if (snapshot.hasData) {
-                  return _createListWallets(snapshot.data!);
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: FatButton(
-              title: 'Agregar nueva billetera',
-              onPressed: () => {_createDialog(context)},
-            ),
+            child: this.authService.userWallets.length == 0
+                ? NoInformation(
+                    icon: Icons.no_accounts,
+                    message: 'No tienes billeteras, pulsa en + para crear una',
+                    showButton: false,
+                    iconButton: Icons.plus_one,
+                    onPressed: () => {},
+                  )
+                : _createListWallets(this.authService.userWallets),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
+        onPressed: () => _createDialog(context),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
@@ -73,7 +73,7 @@ class _NewWalletState extends State<NewWallet> {
           width: double.infinity,
           child: ListTile(
             onTap: () {
-              Navigator.pushNamed(context, 'qrPage', arguments: userWallet.id);
+              Navigator.pushNamed(context, 'qrPage', arguments: userWallet);
             },
             leading: Icon(Icons.wallet_giftcard),
             title: Text(userWallet.walletName),
@@ -112,7 +112,7 @@ class _NewWalletState extends State<NewWallet> {
                 ),
                 SizedBox(height: 20),
                 FatButton(
-                  title: 'Guardar',
+                  title: Text('Guardar'),
                   onPressed: () => {
                     onSubmitNewWallet(context, nameWallet),
                   },
@@ -143,14 +143,15 @@ class _NewWalletState extends State<NewWallet> {
   onSubmitNewWallet(
       BuildContext context, TextEditingController nameWallet) async {
     final walletService = WalletServices();
+    if (nameWallet.text.trim().length > 20) {
+      return mostrarAlerta(
+          context, 'Error', 'El nombre debe ser menor a 20 caracteres');
+    }
     final respOk = await walletService.createNewWallet(nameWallet.text.trim());
 
     if (respOk) {
+      this.authService.userWallets = await walletService.getUsersWallets();
       Navigator.pop(context);
     }
-  }
-
-  void _loadWallets() async {
-    await walletServies.getUsersWallets();
   }
 }

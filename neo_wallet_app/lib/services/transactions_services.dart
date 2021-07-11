@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:neo_wallet/enviroments/variables_enviroments.dart'
     as Enviroments;
@@ -9,7 +10,7 @@ import 'package:neo_wallet/models/transactions_response.dart';
 
 import 'auth_services.dart';
 
-class TransactionsServices {
+class TransactionsServices with ChangeNotifier {
   //
 
   final _transactionsStreamController =
@@ -24,6 +25,15 @@ class TransactionsServices {
   void disposeStream() {
     _transactionsStreamController.close();
   }
+
+  bool _isSending = false;
+
+  set isSending(bool valor) {
+    this._isSending = valor;
+    notifyListeners();
+  }
+
+  bool get isSending => this._isSending;
 
   getUserTransactionsBloc() async {
     _transactionsStreamController.sink.add(await this.getUserTransactions());
@@ -44,15 +54,19 @@ class TransactionsServices {
     return transactionsResponse.userTransactions;
   }
 
-  Future<SendAmoutResponse> sendAmountToServer({
+  Future<bool> sendAmountToServer({
     required int amount,
     required String userOriginWallet,
     required String userTargetWallet,
+    required String userOriginName,
   }) async {
+    this.isSending = true;
+
     final data = {
       'amount': amount,
       'userOriginWallet': userOriginWallet,
       'userTargetWallet': userTargetWallet,
+      'userOriginName': userOriginName,
     };
     final resp = await http.post(
       Uri.parse('${Enviroments.serverHttpUrl}/transactions/send/'),
@@ -63,9 +77,14 @@ class TransactionsServices {
       body: jsonEncode(data),
     );
 
-    final datax = sendAmoutResponseFromJson(resp.body);
-
-    return datax;
+    if (resp.statusCode == 200) {
+      final datax = sendAmoutResponseFromJson(resp.body);
+      this._isSending = false;
+      return datax.ok;
+    } else {
+      this.isSending = false;
+      return false;
+    }
   }
 
   Future<List<UserTransaction>> getUsersHistoryTransactions() async {

@@ -9,32 +9,37 @@ class Labels extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          this.subTitle,
-          style: TextStyle(
-              color: Colors.white54, fontSize: 15, fontWeight: FontWeight.w300),
-        ),
-        SizedBox(height: 10),
-        GestureDetector(
-          child: Text(
-            this.title,
+    return FadeInUp(
+      duration: Duration(milliseconds: 500),
+      child: Column(
+        children: [
+          Text(
+            this.subTitle,
             style: TextStyle(
-                color: Colors.blue[600],
-                fontSize: 18,
-                fontWeight: FontWeight.bold),
+                color: Colors.white54,
+                fontSize: 15,
+                fontWeight: FontWeight.w300),
           ),
-          onTap: () {
-            Navigator.pushNamed(context, route);
-          },
-        ),
-        SizedBox(height: 5),
-        Text(
-          'Términos y condiciones de uso',
-          style: TextStyle(fontWeight: FontWeight.w200, fontSize: 15),
-        ),
-      ],
+          SizedBox(height: 10),
+          GestureDetector(
+            child: Text(
+              this.title,
+              style: TextStyle(
+                  color: Colors.blue[600],
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+            ),
+            onTap: () {
+              Navigator.pushNamed(context, route);
+            },
+          ),
+          SizedBox(height: 5),
+          Text(
+            'Términos y condiciones de uso',
+            style: TextStyle(fontWeight: FontWeight.w200, fontSize: 15),
+          ),
+        ],
+      ),
     );
   }
 }

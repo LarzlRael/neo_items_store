@@ -12,12 +12,17 @@ class Logo extends StatelessWidget {
       width: 160,
       child: Column(
         children: [
-          Image(
-            image: NetworkImage(
-                'https://negocioexitoso.online/wp-content/uploads/2021/06/logo-blanco-1Kx1K-150x150.png'),
+          FadeIn(
+            duration: Duration(milliseconds: 2000),
+            child: Image(
+              image: AssetImage('assets/logo_blanco.png'),
+            ),
           ),
           SizedBox(height: 20),
-          Text(title, style: TextStyle(fontSize: 30)),
+          Text(
+            title,
+            style: TextStyle(fontSize: 30),
+          ),
         ],
       ),
     );

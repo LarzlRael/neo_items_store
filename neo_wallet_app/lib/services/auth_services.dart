@@ -5,13 +5,24 @@ import 'package:http/http.dart' as http;
 import 'package:neo_wallet/enviroments/variables_enviroments.dart'
     as Enviroments;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:neo_wallet/models/error_response.dart';
 
 import 'package:neo_wallet/models/login_response.dart';
 import 'package:neo_wallet/models/usuario.dart';
+import 'package:neo_wallet/models/wallets_users_response.dart';
 
 class AuthService with ChangeNotifier {
   //
   late Usuario usuario;
+  late List<UserWallet> _userWallets;
+
+  set userWallets(List<UserWallet> value) {
+    this._userWallets = value;
+    notifyListeners();
+  }
+
+  List<UserWallet> get userWallets => this._userWallets;
+
   bool _authtecating = false;
 
   final _storage = FlutterSecureStorage();
@@ -20,6 +31,8 @@ class AuthService with ChangeNotifier {
     this._authtecating = valor;
     notifyListeners();
   }
+
+  bool get autenticando => this._authtecating;
 
   // token static getters
 
@@ -34,15 +47,13 @@ class AuthService with ChangeNotifier {
     await _storage.delete(key: 'token');
   }
 
-  bool get autenticando => this._authtecating;
-
-  Future<bool> login(String email, String password) async {
+  Future<bool> login(String email, String password, String deviceId) async {
     this.autenticando = true;
 
     final data = {'email': email, 'password': password};
 
     final resp = await http.post(
-      Uri.parse('${Enviroments.serverHttpUrl}/auth/login/'),
+      Uri.parse('${Enviroments.serverHttpUrl}/auth/login'),
       body: jsonEncode(data),
       headers: {'Content-type': 'application/json'},
     );
@@ -50,9 +61,9 @@ class AuthService with ChangeNotifier {
     this.autenticando = false;
 
     if (resp.statusCode == 200) {
-      final loginResponse = loginResponseFromJson(resp.body);
-      this.usuario = loginResponse.usuario;
-      await this._saveToken(loginResponse.token);
+      saveUserinfo(resp.body);
+      await this.saveDeviceId(deviceId);
+
       return true;
     } else {
       return false;
@@ -75,13 +86,22 @@ class AuthService with ChangeNotifier {
     this.autenticando = true;
 
     if (resp.statusCode == 200) {
-      final loginResponse = loginResponseFromJson(resp.body);
-      this.usuario = loginResponse.usuario;
-      await this._saveToken(loginResponse.token);
+      saveUserinfo(resp.body);
+
       return true;
     } else {
       final respBody = jsonDecode(resp.body);
-      return respBody['msg'];
+      /* return respBody['msg']; */
+      if (respBody['msg'] != null) {
+        return respBody['msg'];
+      } else {
+        final errors = errorResponseFromJson(resp.body).errors;
+
+        final message =
+            '${errors?.email?.msg != null ? errors?.email?.msg : ''} \n${errors!.name?.msg != null ? errors.name?.msg : ''} \n ${errors.password!.msg != null ? errors.password?.msg : ''}';
+        this.autenticando = false;
+        return message;
+      }
     }
   }
 
@@ -96,12 +116,35 @@ class AuthService with ChangeNotifier {
     );
 
     if (resp.statusCode == 200) {
-      final loginResponse = loginResponseFromJson(resp.body);
-      this.usuario = loginResponse.usuario;
-      await this._saveToken(loginResponse.token);
+      saveUserinfo(resp.body);
+
       return true;
     } else {
       this.logout();
+      return false;
+    }
+  }
+
+  Future<bool> saveDeviceId(String tokenIdDevice) async {
+    /* print(tokenIdDevice); */
+
+    final data = {
+      'deviceId': tokenIdDevice,
+    };
+    final token = await this._storage.read(key: 'token');
+
+    final resp = await http.post(
+      Uri.parse('${Enviroments.serverHttpUrl}/auth/saveNewDevice'),
+      body: jsonEncode(data),
+      headers: {
+        'Content-type': 'application/json',
+        'x-token': token != null ? token : '',
+      },
+    );
+
+    if (resp.statusCode == 200) {
+      return true;
+    } else {
       return false;
     }
   }
@@ -112,5 +155,12 @@ class AuthService with ChangeNotifier {
 
   Future logout() async {
     await _storage.delete(key: 'token');
+  }
+
+  void saveUserinfo(String responsebody) async {
+    final loginResponse = loginResponseFromJson(responsebody);
+    this.usuario = loginResponse.usuario;
+    this._userWallets = this.usuario.wallets;
+    await this._saveToken(loginResponse.token);
   }
 }

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:neo_wallet/helpers.dart';
 import 'package:neo_wallet/models/wallets_users_response.dart';
 import 'package:neo_wallet/services/auth_services.dart';
-import 'package:neo_wallet/services/wallet_services.dart';
 import 'package:neo_wallet/utils/utils.dart';
+import 'package:neo_wallet/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 class ManagamentPage extends StatefulWidget {
@@ -12,14 +12,13 @@ class ManagamentPage extends StatefulWidget {
 }
 
 class _ManagamentPageState extends State<ManagamentPage> {
+  late AuthService authService;
   @override
   Widget build(BuildContext context) {
-    final walletServies = WalletServices();
-    final authService = Provider.of<AuthService>(context);
+    /* final walletServies = WalletServices(); */
+    authService = Provider.of<AuthService>(context);
 
     final usuario = authService.usuario;
-
-    walletServies.getUserWalletsBloc();
 
     return Scaffold(
       appBar: AppBar(
@@ -27,9 +26,13 @@ class _ManagamentPageState extends State<ManagamentPage> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.grid_3x3_sharp),
+            icon: Icon(Icons.wallet_giftcard_rounded),
             onPressed: () {
-              Navigator.pushNamed(context, 'newWallet');
+              Navigator.pushNamed(
+                context,
+                'newWallet',
+                arguments: 'managament_page',
+              );
             },
           ),
         ],
@@ -48,7 +51,7 @@ class _ManagamentPageState extends State<ManagamentPage> {
               height: 10,
             ),
             Expanded(
-              child: StreamBuilder(
+              /*  child: StreamBuilder(
                 stream: walletServies.userWalletsStream,
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -60,7 +63,24 @@ class _ManagamentPageState extends State<ManagamentPage> {
                     );
                   }
                 },
-              ),
+              ), */
+
+              child: this.authService.userWallets.length == 0
+                  ? NoInformation(
+                      icon: Icons.no_accounts,
+                      message: 'No tienes billeteras',
+                      showButton: true,
+                      buttonTitle: 'Crear Nueva Billetera',
+                      iconButton: Icons.plus_one,
+                      onPressed: () => {
+                        Navigator.pushNamed(
+                          context,
+                          'newWallet',
+                          arguments: 'managament_page',
+                        )
+                      },
+                    )
+                  : _createListWallets(this.authService.userWallets),
             ),
             Divider(
               color: Colors.white24,
@@ -135,5 +155,6 @@ class _ManagamentPageState extends State<ManagamentPage> {
 
   void logOut() {
     Navigator.pushReplacementNamed(context, 'login');
+    authService.logout();
   }
 }

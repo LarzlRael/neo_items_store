@@ -14,12 +14,12 @@ class SendAmoutResponse {
   SendAmoutResponse({
     required this.ok,
     required this.msg,
-    required this.newTransactionRaw,
+    this.newTransactionRaw,
   });
 
   bool ok;
   String msg;
-  NewTransactionRaw newTransactionRaw;
+  NewTransactionRaw? newTransactionRaw;
 
   factory SendAmoutResponse.fromJson(Map<String, dynamic> json) =>
       SendAmoutResponse(
@@ -32,28 +32,28 @@ class SendAmoutResponse {
   Map<String, dynamic> toJson() => {
         "ok": ok,
         "msg": msg,
-        "newTransactionRaw": newTransactionRaw.toJson(),
+        "newTransactionRaw": newTransactionRaw?.toJson(),
       };
 }
 
 class NewTransactionRaw {
   NewTransactionRaw({
-    required this.amount,
-    required this.originUser,
-    required this.userOriginWallet,
-    required this.userTargetWallet,
-    required this.destinyUser,
-    required this.createdAt,
-    required this.updatedAt,
+    this.amount,
+    this.originUser,
+    this.userOriginWallet,
+    this.userTargetWallet,
+    this.destinyUser,
+    this.createdAt,
+    this.updatedAt,
   });
 
-  int amount;
-  String originUser;
-  String userOriginWallet;
-  String userTargetWallet;
-  String destinyUser;
-  DateTime createdAt;
-  DateTime updatedAt;
+  int? amount;
+  String? originUser;
+  String? userOriginWallet;
+  String? userTargetWallet;
+  String? destinyUser;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   factory NewTransactionRaw.fromJson(Map<String, dynamic> json) =>
       NewTransactionRaw(
@@ -72,7 +72,7 @@ class NewTransactionRaw {
         "userOriginWallet": userOriginWallet,
         "userTargetWallet": userTargetWallet,
         "destinyUser": destinyUser,
-        "createdAt": createdAt.toIso8601String(),
-        "updatedAt": updatedAt.toIso8601String(),
+        "createdAt": createdAt?.toIso8601String(),
+        "updatedAt": updatedAt?.toIso8601String(),
       };
 }

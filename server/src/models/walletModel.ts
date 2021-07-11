@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { IWallet } from '../interfaces/jwt';
+import { IWallet } from '../interfaces/interfaces';
 import { USERS, WALLET } from './documents';
 
 const WalletSchema = new Schema({

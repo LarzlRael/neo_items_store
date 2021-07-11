@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.io = void 0;
 const express_1 = __importDefault(require("express"));
 const app = express_1.default();
+const morgan_1 = __importDefault(require("morgan"));
 require('dotenv').config();
 const path_1 = __importDefault(require("path"));
 const auth_1 = __importDefault(require("./routes/auth"));
@@ -22,6 +23,7 @@ require("./sockets/socket");
 /* app.set("view engine", "ejs"); */
 //Lectura y parse de BODY
 app.use(express_1.default.json());
+app.use(morgan_1.default('dev'));
 //Index server index
 const publicPath = path_1.default.resolve(__dirname, 'public');
 app.use(express_1.default.static(publicPath));

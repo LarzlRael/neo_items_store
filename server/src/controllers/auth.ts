@@ -47,7 +47,7 @@ export const registerUser = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
     const { password, email } = req.body;
 
-    const userExist = await Usuario.findOne({ email });
+    const userExist = await Usuario.findOne({ email }).populate('wallets');
 
     if (!userExist) {
         return res.status(403).json({
@@ -81,7 +81,7 @@ export const renewToken = async (req: Request, res: Response) => {
     const token = await generarJWT(uid);
 
     // obtener el suaurio por el UID, Usuario.findbyId...
-    const usuario = await Usuario.findById(uid);
+    const usuario = await Usuario.findById(uid).populate('wallets');
     res.json({
         ok: true,
         usuario,
@@ -102,7 +102,7 @@ export const saveNewDevice = async (req: Request, res: Response) => {
     if (userDevices!.indexOf(deviceId) === -1) {
         userDevices!.push(deviceId)
         await userExist?.save();
-        
+
         console.log('registrando nuevo id');
 
         res.json({

@@ -33,9 +33,13 @@ class WalletServices {
       },
     );
 
-    final transactionsResponse = userWalletsResponseFromJson(resp.body);
+    /* print(resp.body); */
+    if (resp.statusCode == 200) {
+      final transactionsResponse = userWalletsResponseFromJson(resp.body);
 
-    return transactionsResponse.userWallets;
+      return transactionsResponse.userWallets;
+    }
+    return [];
   }
 
   getUserWalletsBloc() async {
@@ -55,6 +59,7 @@ class WalletServices {
       },
       body: jsonEncode(data),
     );
+
     final respBody = jsonDecode(resp.body);
 
     this.getUserWalletsBloc();

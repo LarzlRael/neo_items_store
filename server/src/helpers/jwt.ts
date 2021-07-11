@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { IPayload } from '../interfaces/jwt';
+import { IPayload } from '../interfaces/interfaces';
 
 export const generarJWT = (uid: any) => {
     return new Promise((resolve, reject) => {

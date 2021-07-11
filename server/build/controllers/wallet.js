@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getWalletsByUser = exports.createWallet = void 0;
 const walletModel_1 = __importDefault(require("../models/walletModel"));
+const userModel_1 = __importDefault(require("../models/userModel"));
 const createWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { uid } = req;
@@ -21,6 +22,9 @@ const createWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         newWallet.idUser = uid;
         newWallet.walletName = req.body.walletName;
         const newWalletCreated = yield newWallet.save();
+        const getUser = yield userModel_1.default.findById(uid);
+        getUser === null || getUser === void 0 ? void 0 : getUser.wallets.push(newWalletCreated.id);
+        yield (getUser === null || getUser === void 0 ? void 0 : getUser.save());
         res.json({
             ok: true,
             userWallets: newWalletCreated

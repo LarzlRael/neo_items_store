@@ -1,6 +1,6 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:neo_wallet/services/auth_services.dart';
-import 'package:neo_wallet/services/socket_service.dart';
 import 'package:neo_wallet/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -44,10 +44,22 @@ class __FormState extends State<_Form> {
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
 
+  late String tokenDeviceId;
+  late FirebaseMessaging messaging;
+
+  @override
+  void initState() {
+    messaging = FirebaseMessaging.instance;
+    messaging.getToken().then((token) {
+      tokenDeviceId = token!;
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
-    final socketService = Provider.of<SocketService>(context, listen: false);
+    /* final socketService = Provider.of<SocketService>(context, listen: false); */
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 30),
@@ -68,7 +80,13 @@ class __FormState extends State<_Form> {
             isPassword: true,
           ),
           FatButton(
-            title: 'Ingresar',
+            title: !authService.autenticando
+                ? Text('Ingresar',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                    ))
+                : CircularProgressIndicator(),
             onPressed: authService.autenticando
                 ? null
                 : () async {
@@ -77,9 +95,11 @@ class __FormState extends State<_Form> {
                     // print(passCtrl.text);
 
                     final loginOk = await authService.login(
-                        emailCtrl.text.trim(), passCtrl.text.trim());
+                        emailCtrl.text.trim().toLowerCase(),
+                        passCtrl.text.trim(),
+                        this.tokenDeviceId);
                     if (loginOk) {
-                      socketService.connect();
+                      /* socketService.connect(); */
                       Navigator.pushReplacementNamed(context, 'home');
                     } else {
                       //crear alerta

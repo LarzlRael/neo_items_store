@@ -2,14 +2,30 @@ part of 'widgets.dart';
 
 class HistoryUsersTransactions extends StatelessWidget {
   final UserTransaction userTransaction;
+  final AnimationController animationController;
 
-  const HistoryUsersTransactions({required this.userTransaction});
+  const HistoryUsersTransactions({
+    required this.userTransaction,
+    required this.animationController,
+  });
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
 
     final color = Color(0xff7BC896);
 
+    return FadeTransition(
+      opacity: this.animationController,
+      child: SizeTransition(
+        sizeFactor:
+            CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+        child: _transaction(authService, color, context),
+      ),
+    );
+  }
+
+  Container _transaction(
+      AuthService authService, Color color, BuildContext context) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(10),
@@ -37,10 +53,9 @@ class HistoryUsersTransactions extends StatelessWidget {
                   Icon(
                     Icons.arrow_circle_up,
                     size: 35,
-                    color:
-                        userTransaction.destinyUser != authService.usuario.uid
-                            ? color
-                            : Colors.blue,
+                    color: userTransaction.originUser == authService.usuario.uid
+                        ? color
+                        : Colors.blue,
                   ),
                   SizedBox(width: 5),
                   Text(
@@ -48,7 +63,7 @@ class HistoryUsersTransactions extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 18,
                       color:
-                          userTransaction.destinyUser != authService.usuario.uid
+                          userTransaction.originUser == authService.usuario.uid
                               ? color
                               : Colors.blue,
                     ),

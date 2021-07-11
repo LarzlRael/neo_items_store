@@ -4,13 +4,18 @@ class NoInformation extends StatelessWidget {
   final IconData icon;
   final String message;
   final bool showButton;
+  final String? buttonTitle;
+  final VoidCallback? onPressed;
+  final IconData iconButton;
 
-  const NoInformation(
-      {Key? key,
-      required this.icon,
-      required this.message,
-      required this.showButton})
-      : super(key: key);
+  NoInformation({
+    required this.icon,
+    required this.message,
+    required this.showButton,
+    this.buttonTitle,
+    this.onPressed,
+    required this.iconButton,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +33,10 @@ class NoInformation extends StatelessWidget {
                 ? Container(
                     width: double.infinity,
                     child: ButtonWithIcon(
-                      label: "Recibir",
-                      icon: Icons.qr_code,
+                      label: buttonTitle ?? '',
+                      icon: this.iconButton,
                       buttonBorderPrimary: true,
-                      onPressed: () {},
+                      onPressed: onPressed!,
                     ),
                   )
                 : Container(),

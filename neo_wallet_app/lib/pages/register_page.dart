@@ -39,14 +39,16 @@ class _Form extends StatefulWidget {
 }
 
 class __FormState extends State<_Form> {
+  final emailCtrl = TextEditingController();
+  final passCtrl = TextEditingController();
+  final nameCtrl = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     //
     final authService = Provider.of<AuthService>(context, listen: false);
     //
-    final emailCtrl = TextEditingController();
-    final passCtrl = TextEditingController();
-    final nameCtrl = TextEditingController();
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 30),
       child: Column(
@@ -73,7 +75,13 @@ class __FormState extends State<_Form> {
             textController: passCtrl,
           ),
           FatButton(
-            title: 'Crear cuenta',
+            title: !authService.autenticando
+                ? Text('Ingresar',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                    ))
+                : CircularProgressIndicator(),
             onPressed: authService.autenticando
                 ? null
                 : () async {

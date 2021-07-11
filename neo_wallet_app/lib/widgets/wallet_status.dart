@@ -33,40 +33,55 @@ class WalletStatus extends StatelessWidget {
         ),
       ),
       child: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        child: Stack(
           children: [
             Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text('Etherum', style: titleStyle),
-                Text('1740.58 USD per ETH', style: subTitleStyle),
+                Column(
+                  children: [
+                    Text('Etherum', style: titleStyle),
+                    Text('1740.58 USD per ETH', style: subTitleStyle),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Text('0.00000000012 ETH', style: titleStyle),
+                    Text('0.47 USD', style: subTitleStyle),
+                  ],
+                ),
+                showButton
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ButtonWithIcon(
+                            label: 'Enviar',
+                            icon: (Icons.send_and_archive_rounded),
+                            buttonBorderPrimary: false,
+                            onPressed: () {},
+                          ),
+                          ButtonWithIcon(
+                            label: 'Recibir',
+                            icon: (Icons.qr_code),
+                            buttonBorderPrimary: false,
+                            onPressed: () {},
+                          ),
+                        ],
+                      )
+                    : Container()
               ],
             ),
-            Column(
-              children: [
-                Text('0.00000000012 ETH', style: titleStyle),
-                Text('0.47 USD', style: subTitleStyle),
-              ],
+            Positioned(
+              child: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  size: 20,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
             ),
-            showButton
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ButtonWithIcon(
-                        label: 'Enviar',
-                        icon: (Icons.send_and_archive_rounded),
-                        buttonBorderPrimary: false,
-                        onPressed: () {},
-                      ),
-                      ButtonWithIcon(
-                        label: 'Recibir',
-                        icon: (Icons.qr_code),
-                        buttonBorderPrimary: false,
-                        onPressed: () {},
-                      ),
-                    ],
-                  )
-                : Container()
           ],
         ),
       ),

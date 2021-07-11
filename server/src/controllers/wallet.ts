@@ -1,7 +1,9 @@
 import { Request, Response, } from 'express';
 
-
 import WalletModel from '../models/walletModel';
+import UserModel from '../models/userModel';
+
+
 
 
 export const createWallet = async (req: Request, res: Response) => {
@@ -9,10 +11,15 @@ export const createWallet = async (req: Request, res: Response) => {
     try {
         const { uid } = req;
         const newWallet = new WalletModel();
+
         newWallet.idUser = uid;
         newWallet.walletName = req.body.walletName;
 
         const newWalletCreated = await newWallet.save();
+
+        const getUser = await UserModel.findById(uid);
+        getUser?.wallets.push(newWalletCreated.id);
+        await getUser?.save();
 
         res.json({
             ok: true,

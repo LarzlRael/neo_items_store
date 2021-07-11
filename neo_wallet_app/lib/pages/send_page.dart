@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:neo_wallet/helpers.dart';
+import 'package:neo_wallet/models/usuario.dart';
 import 'package:neo_wallet/models/wallets_users_response.dart';
+import 'package:neo_wallet/services/auth_services.dart';
 import 'package:neo_wallet/services/socket_service.dart';
 import 'package:neo_wallet/services/transactions_services.dart';
 import 'package:neo_wallet/widgets/wallet_status.dart';
@@ -21,17 +23,24 @@ class _SendPageState extends State<SendPage> {
 
   TextEditingController walletDirectionToSend = TextEditingController();
   TextEditingController amount = TextEditingController();
+
   late SocketService socketService;
+  late TransactionsServices transactionsServices;
 
   double _currentSliderValue = 0;
 
   late UserWallet walletArgument;
+  late Usuario usuario;
+  late AuthService authService;
+  late SnackBar snackBar;
 
   @override
   void initState() {
+    transactionsServices =
+        Provider.of<TransactionsServices>(context, listen: false);
     socketService = Provider.of<SocketService>(context, listen: false);
-    socketService.socket
-        .on('transaction-real-time', socketService.listenTransaction);
+    this.authService = Provider.of<AuthService>(context, listen: false);
+    usuario = authService.usuario;
     super.initState();
   }
 
@@ -46,25 +55,9 @@ class _SendPageState extends State<SendPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Stack(
-                children: [
-                  WalletStatus(
-                    showButton: false,
-                    walletHeightSize: 0.25,
-                  ),
-                  Positioned(
-                    top: 30,
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back,
-                        /* size: 40, */
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                ],
+              WalletStatus(
+                showButton: false,
+                walletHeightSize: 0.25,
               ),
               containerElements(context),
             ],
@@ -75,40 +68,66 @@ class _SendPageState extends State<SendPage> {
   }
 
   Widget containerElements(BuildContext context) {
+    final size = 16.0;
     return Container(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          children: [
-            Text('Billetera: ${walletArgument.walletName}'),
-            Text('Saldo Actual: ${walletArgument.balance}'),
-            _createInput(walletDirectionToSend, 'Ingrese direccion de recibo',
-                TextInputType.text),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ButtonWithIcon(
-                  icon: Icons.qr_code,
-                  label: 'Scan',
-                  buttonBorderPrimary: true,
-                  onPressed: scanQr,
-                ),
-                ButtonWithIcon(
-                  icon: Icons.paste,
-                  label: 'Paste',
-                  buttonBorderPrimary: false,
-                  onPressed: pasteValue,
+      padding: EdgeInsets.all(15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RichText(
+            text: TextSpan(
+              text: 'Billetera : ',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: size),
+              children: <TextSpan>[
+                TextSpan(
+                  text: '${walletArgument.walletName}',
+                  style: TextStyle(fontWeight: FontWeight.normal),
                 ),
               ],
             ),
-            SizedBox(
-              height: 15,
+          ),
+          SizedBox(height: 3),
+          RichText(
+            text: TextSpan(
+              text: 'Saldo Actual : ',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: size),
+              children: <TextSpan>[
+                TextSpan(
+                  text: '${walletArgument.balance}',
+                  style: TextStyle(fontWeight: FontWeight.normal),
+                ),
+              ],
             ),
-            Text('Enviar : ${this._currentSliderValue}'),
-            _createSlider(walletArgument.balance),
-            _createInput(amount, 'Saldo', TextInputType.number),
-            _sendButton(context),
-          ],
-        ));
+          ),
+          _createInput(walletDirectionToSend, 'Ingrese direccion de recibo',
+              TextInputType.text),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ButtonWithIcon(
+                icon: Icons.qr_code,
+                label: 'Scanear',
+                buttonBorderPrimary: true,
+                onPressed: scanQr,
+              ),
+              ButtonWithIcon(
+                icon: Icons.paste,
+                label: 'Pegar',
+                buttonBorderPrimary: false,
+                onPressed: pasteValue,
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          Text('Enviar : ${this._currentSliderValue}'),
+          _createSlider(walletArgument.balance),
+          _createInput(amount, 'Saldo', TextInputType.number),
+          _sendButton(context),
+        ],
+      ),
+    );
   }
 
   Container _createInput(TextEditingController editingController,
@@ -141,7 +160,9 @@ class _SendPageState extends State<SendPage> {
           shape: StadiumBorder(),
           padding: EdgeInsets.symmetric(vertical: 15),
         ),
-        onPressed: () => {sendAmount()},
+        onPressed: this.transactionsServices.isSending
+            ? null
+            : () async => {sendAmount()},
         child: Text('Enviar'),
       ),
     );
@@ -156,8 +177,6 @@ class _SendPageState extends State<SendPage> {
     } */
     String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
         "#ff6666", "Cancelar", false, ScanMode.DEFAULT);
-
-    print('futureString : $barcodeScanRes');
 
     setState(() {
       this.walletDirectionToSend.text = barcodeScanRes;
@@ -181,20 +200,29 @@ class _SendPageState extends State<SendPage> {
   }
 
   void sendAmount() async {
-    final transactionsServices = TransactionsServices();
-
     if (this.walletDirectionToSend.text.length == 0) {
       return mostrarAlerta(context, 'Error',
           'Hubo un error en la transaccion, revise la direccion de envio');
     }
 
-    final respOK = await transactionsServices.sendAmountToServer(
-      amount: this._currentSliderValue.toInt(),
-      userOriginWallet: this.walletArgument.id,
-      userTargetWallet: this.walletDirectionToSend.text,
-    );
-    if (respOK.ok) {
-      socketService.emit('transaction-real-time', (respOK.newTransactionRaw));
+    final amountToSend = double.parse(this.amount.text);
+    if (amountToSend > this.walletArgument.balance) {
+      return mostrarAlerta(
+        context,
+        'Error',
+        'No puedes enviar mas de lo que tienes',
+      );
+    }
+
+    final respOK = await this.transactionsServices.sendAmountToServer(
+          amount: amountToSend.toInt(),
+          userOriginWallet: this.walletArgument.id,
+          userTargetWallet: this.walletDirectionToSend.text,
+          userOriginName: this.usuario.name,
+        );
+    if (respOK) {
+      /* socketService.emit('transaction-real-time', (respOK.newTransactionRaw)); */
+      showSnackBarNotification();
 
       Navigator.pushNamed(context, 'home');
     } else {
@@ -208,5 +236,21 @@ class _SendPageState extends State<SendPage> {
     setState(() {
       this.walletDirectionToSend.text = value.length != 0 ? value : '';
     });
+  }
+
+  void showSnackBarNotification() {
+    this.snackBar = SnackBar(
+      backgroundColor: Colors.green,
+      content: Text('Enviado correctamente',
+          style: TextStyle(
+            color: Colors.white,
+          )),
+      action: SnackBarAction(
+        label: 'ok',
+        textColor: Colors.white,
+        onPressed: () {},
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

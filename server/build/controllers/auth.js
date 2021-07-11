@@ -46,7 +46,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.registerUser = registerUser;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { password, email } = req.body;
-    const userExist = yield userModel_1.default.findOne({ email });
+    const userExist = yield userModel_1.default.findOne({ email }).populate('wallets');
     if (!userExist) {
         return res.status(403).json({
             ok: false,
@@ -74,7 +74,7 @@ const renewToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     // generar un nuevo JWT, generarJWT
     const token = yield jwt_1.generarJWT(uid);
     // obtener el suaurio por el UID, Usuario.findbyId...
-    const usuario = yield userModel_1.default.findById(uid);
+    const usuario = yield userModel_1.default.findById(uid).populate('wallets');
     res.json({
         ok: true,
         usuario,

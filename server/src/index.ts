@@ -1,6 +1,6 @@
 import express from 'express';
 const app = express();
-
+import morgan from 'morgan';
 require('dotenv').config();
 import path from 'path';
 import authRoutes from './routes/auth';
@@ -23,6 +23,7 @@ import './sockets/socket';
 
 //Lectura y parse de BODY
 app.use(express.json());
+app.use(morgan('dev'))
 //Index server index
 const publicPath = path.resolve(__dirname, 'public');
 app.use(express.static(publicPath));

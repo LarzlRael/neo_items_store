@@ -1,7 +1,7 @@
 part of 'widgets.dart';
 
 class FatButton extends StatelessWidget {
-  final String title;
+  final Widget title;
   final VoidCallback? onPressed;
 
   @override
@@ -21,11 +21,7 @@ class FatButton extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 15),
         width: double.infinity,
         child: Center(
-          child: Text(title,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-              )),
+          child: this.title,
         ),
       ),
       onPressed: onPressed,
