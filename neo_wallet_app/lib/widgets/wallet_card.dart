@@ -3,10 +3,11 @@ part of 'widgets.dart';
 class WalletCard extends StatelessWidget {
   final int amount;
   final String nameWallet;
-
+  final DateTime createdAt;
   const WalletCard({
     required this.amount,
     required this.nameWallet,
+    required this.createdAt,
   });
 
   @override
@@ -55,7 +56,7 @@ class WalletCard extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  '${this.nameWallet}',
+                  'Creado el ${convertDateTimeToString(this.createdAt, false)}',
                   style: style,
                 ),
               ],

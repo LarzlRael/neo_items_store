@@ -46,9 +46,14 @@ class _ManagamentPageState extends State<ManagamentPage> {
         ],
         leading: IconButton(
           onPressed: () {
-            mostrarAlertaCerrarSesion(context, logOut);
+            /* mostrarAlertaCerrarSesion(
+                context: context,
+                onPressed: logOut,
+                title: 'Cerrar Sesion',
+                subtitle: '¿Esta seguro de cerrar sesión?'); */
+            Navigator.pushNamed(context, 'userProfile');
           },
-          icon: Icon(Ionicons.exit_outline),
+          icon: Icon(Icons.person),
         ),
       ),
       body: Container(
@@ -79,9 +84,6 @@ class _ManagamentPageState extends State<ManagamentPage> {
                       onRefresh: _refreshWallets,
                       child: _createListWallets(this.authService.userWallets)),
             ),
-            Divider(
-              color: Colors.white24,
-            ),
             Container(
               decoration: BoxDecoration(
                   border: Border.symmetric(horizontal: BorderSide.none)),
@@ -90,9 +92,6 @@ class _ManagamentPageState extends State<ManagamentPage> {
                 title: Text('Show Backup Phars'),
                 trailing: Icon(Icons.chevron_right),
               ),
-            ),
-            Divider(
-              color: Colors.white24,
             ),
           ],
         ),

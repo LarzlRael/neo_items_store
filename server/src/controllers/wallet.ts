@@ -55,19 +55,27 @@ export const renameWallet = async (req: Request, res: Response) => {
         const { newName } = req.body;
 
         const userWalletUpdated = await WalletModel.findOne({ _id: walletId });
-        if (userWalletUpdated) {
-            userWalletUpdated!.walletName = newName;
-            await userWalletUpdated?.save();
-            res.json({
-                ok: true,
-                userWalletUpdated
-            })
+        if (await verifyWalletOwner(uid, walletId)) {
+            if (userWalletUpdated) {
+                userWalletUpdated!.walletName = newName;
+                await userWalletUpdated?.save();
+                res.json({
+                    ok: true,
+                    userWalletUpdated
+                })
+            } else {
+                res.status(400).json({
+                    ok: false,
+                    msg: 'No se econtro la billetera'
+                })
+            }
         } else {
             res.status(400).json({
                 ok: false,
-                msg: 'No se econtro la billetera'
+                msg: 'No puedes renombrar una billetera que no es tuya'
             })
         }
+
     } catch (error) {
         console.log(error);
     }
@@ -81,40 +89,51 @@ export const deleteWallet = async (req: Request, res: Response) => {
 
         const { uid } = req;
 
-        /* const userWallets = await WalletModel.find({ idUser: uid }).sort('-createdAt');
 
-        if (userWallets.length == 1) {
-            return res.status(400).json({
-                ok: false,
-                msg: 'No puedes eliminar esta billetera, por que solo tienes una'
-            });
-        } */
+        if (await verifyWalletOwner(uid, walletId)) {
+            const currentWallet = await WalletModel.findById(walletId);
 
-        const currentWallet = await WalletModel.findById(walletId).sort('-createdAt');
+            if (currentWallet) {
+                console.log(currentWallet);
+                if (currentWallet.balance > 0) {
+                    return res.status(400).json({
+                        ok: false,
+                        msg: 'Esta billetara aun tiene saldo, transfieralo a otra billetara'
+                    });
+                }
+                
+                const walletDeleted = await WalletModel.findByIdAndDelete(walletId);
+                return res.json({
+                    ok: true,
+                    msg: 'billetera Eliminada correctamente',
+                    walletDeleted
+                });
 
-        if (currentWallet) {
-            if (currentWallet.balance > 0) {
+
+            } else {
                 return res.status(400).json({
                     ok: false,
-                    msg: 'Esta billetara aun tiene saldo, transfieralo a otra billetara'
-                });
-            } else {
-                await WalletModel.findOneAndDelete(walletId);
-                res.json({
-                    ok: true,
-                    msg: 'billetera Eliminada correctamente'
+                    msg: 'La billetera no existe'
                 });
             }
-
         } else {
             return res.status(400).json({
                 ok: false,
-                msg: 'La billetera no existe'
+                msg: 'no puedes borrar una billetera que no sea tuya'
             });
         }
 
     } catch (error) {
         console.log(error);
     }
+
+}
+
+
+export const verifyWalletOwner = async (idUser: string, idWallet: string): Promise<boolean> => {
+
+    const verifyWallet = await WalletModel.findOne({ _id: idWallet }).sort('-createdAt');
+
+    return (verifyWallet?.idUser == idUser);
 
 }

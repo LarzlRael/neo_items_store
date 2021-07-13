@@ -35,4 +35,8 @@ app.use('/qr', qr_1.default);
 server.listen(port, () => {
     console.log(`Server on port ${port}`);
 });
+//TODO add uploads file to image profile
+//TODO add google signing 
+//TODO ?report by month
+//TODO delete the id of array wallets of users
 //# sourceMappingURL=index.js.map

@@ -31,24 +31,6 @@ class _UserWalletSelectState extends State<UserWalletSelect> {
       appBar: AppBar(
         title: Text(toCapitalize(usuario.name)),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.wallet_giftcard_rounded),
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                'newWallet',
-                arguments: 'managament_page',
-              );
-            },
-          ),
-        ],
-        leading: IconButton(
-          onPressed: () {
-            mostrarAlertaCerrarSesion(context, logOut);
-          },
-          icon: Icon(Icons.exit_to_app),
-        ),
       ),
       body: Container(
         /* padding: EdgeInsets.all(15), */
@@ -58,20 +40,6 @@ class _UserWalletSelectState extends State<UserWalletSelect> {
               height: 10,
             ),
             Expanded(
-              /*  child: StreamBuilder(
-                stream: walletServies.userWalletsStream,
-                builder:
-                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                  if (snapshot.hasData) {
-                    return _createListWallets(snapshot.data);
-                  } else {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
-              ), */
-
               child: this.authService.userWallets.length == 0
                   ? NoInformation(
                       icon: Icons.no_accounts,
@@ -92,9 +60,6 @@ class _UserWalletSelectState extends State<UserWalletSelect> {
                       onRefresh: _refreshWallets,
                       child: _createListWallets(this.authService.userWallets)),
             ),
-            Divider(
-              color: Colors.white24,
-            ),
             Container(
               decoration: BoxDecoration(
                   border: Border.symmetric(horizontal: BorderSide.none)),
@@ -103,9 +68,6 @@ class _UserWalletSelectState extends State<UserWalletSelect> {
                 title: Text('Show Backup Phars'),
                 trailing: Icon(Icons.chevron_right),
               ),
-            ),
-            Divider(
-              color: Colors.white24,
             ),
           ],
         ),

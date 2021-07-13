@@ -66,4 +66,42 @@ class WalletServices {
 
     return respBody['ok'];
   }
+
+  Future<bool> deleteWallet(String idWallet) async {
+    final data = {'walletId': idWallet};
+
+    final resp = await http.delete(
+      Uri.parse(
+        '$_url/deleteWallet',
+      ),
+      headers: {
+        'Content-type': 'application/json',
+        'x-token': await AuthService.getToken(),
+      },
+      body: jsonEncode(data),
+    );
+
+    final respBody = jsonDecode(resp.body);
+    print(respBody);
+    return respBody['ok'];
+  }
+
+  Future<bool> renameWallet(String idWallet, String newName) async {
+    final data = {'walletId': idWallet, 'newName': newName};
+
+    final resp = await http.put(
+      Uri.parse(
+        '$_url/renameWallet',
+      ),
+      headers: {
+        'Content-type': 'application/json',
+        'x-token': await AuthService.getToken(),
+      },
+      body: jsonEncode(data),
+    );
+
+    final respBody = jsonDecode(resp.body);
+    print(respBody);
+    return respBody['ok'];
+  }
 }

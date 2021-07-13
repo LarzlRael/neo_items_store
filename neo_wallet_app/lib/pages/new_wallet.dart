@@ -57,7 +57,8 @@ class _NewWalletState extends State<NewWallet> {
   }
 
   ListView _createListWallets(List<UserWallet> userWallets) {
-    return ListView.builder(
+    return ListView.separated(
+      separatorBuilder: (BuildContext context, int index) => Divider(),
       itemCount: userWallets.length,
       scrollDirection: Axis.vertical,
       itemBuilder: (BuildContext context, int i) {
@@ -69,7 +70,6 @@ class _NewWalletState extends State<NewWallet> {
   Widget _showWallet(BuildContext context, UserWallet userWallet) {
     return Column(
       children: [
-        Divider(),
         Container(
           width: double.infinity,
           child: ListTile(
@@ -82,7 +82,6 @@ class _NewWalletState extends State<NewWallet> {
             trailing: Icon(Icons.qr_code_2_outlined),
           ),
         ),
-        Divider(),
       ],
     );
   }
@@ -98,7 +97,7 @@ class _NewWalletState extends State<NewWallet> {
           actionsPadding: EdgeInsets.zero,
           contentPadding: EdgeInsets.all(10),
           buttonPadding: EdgeInsets.zero,
-          title: Center(child: Text('Larz')),
+          title: Center(child: Text('${authService.usuario.name}')),
           content: Container(
             height: 170,
             child: (Column(

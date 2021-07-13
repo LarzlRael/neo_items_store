@@ -38,13 +38,18 @@ mostrarAlerta(BuildContext context, String titulo, String subtitulo) {
   );
 }
 
-mostrarAlertaCerrarSesion(BuildContext context, VoidCallback onPressed) {
+mostrarAlertaCerrarSesion({
+  required BuildContext context,
+  required String title,
+  required String subtitle,
+  required VoidCallback onPressed,
+}) {
   if (Platform.isAndroid) {
     return showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('Cerrar sesión'),
-        content: Text('¿Esta seguro de cerrar sesion?'),
+        title: Text(title),
+        content: Text(subtitle),
         actions: [
           MaterialButton(
             child: Text('Cancelar'),
