@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:neo_wallet/helpers.dart';
 import 'package:neo_wallet/models/wallets_users_response.dart';
 import 'package:neo_wallet/services/auth_services.dart';
@@ -75,10 +76,10 @@ class _NewWalletState extends State<NewWallet> {
             onTap: () {
               Navigator.pushNamed(context, 'qrPage', arguments: userWallet);
             },
-            leading: Icon(Icons.wallet_giftcard),
+            leading: Icon(Ionicons.wallet),
             title: Text(userWallet.walletName),
             subtitle: Text('${userWallet.balance}'),
-            trailing: Icon(Icons.qr_code_2),
+            trailing: Icon(Icons.qr_code_2_outlined),
           ),
         ),
         Divider(),
@@ -106,7 +107,7 @@ class _NewWalletState extends State<NewWallet> {
                     style: TextStyle(fontWeight: FontWeight.w300)),
                 SizedBox(height: 15),
                 CustomInput(
-                  icon: Icons.ac_unit,
+                  icon: Ionicons.wallet,
                   placeholder: 'Nombre de billetera',
                   textController: nameWallet,
                 ),

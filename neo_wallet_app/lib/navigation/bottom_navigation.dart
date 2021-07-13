@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 
 import 'package:neo_wallet/pages/managament_page.dart';
 import 'package:neo_wallet/pages/user_transactions_history_page.dart';
@@ -50,12 +51,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
       },
       items: [
         BottomNavigationBarItem(
-            icon: Icon(Icons.wallet_membership_rounded),
-            label: 'Transacciones'),
+            icon: Icon(Ionicons.wallet_outline), label: 'Transacciones'),
         BottomNavigationBarItem(
-            icon: Icon(Icons.wallet_giftcard), label: 'Articulos'),
+            icon: Icon(Ionicons.globe_outline), label: 'Articulos'),
         BottomNavigationBarItem(
-            icon: Icon(Icons.settings), label: 'Administrar'),
+            icon: Icon(Ionicons.settings_outline), label: 'Administrar'),
       ],
     );
   }

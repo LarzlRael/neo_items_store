@@ -108,6 +108,9 @@ class _UserTransactionsHistoryPageState
     super.dispose();
   }
 }
-//TODO fix the sending error 
-//TODO upadte wallets after sending and receving
-//TODO sum the wallets in the blue containers
+//TODO fix the sending error, with state loading  [x]
+//TODO sum the wallets in the blue containers [ok]
+
+
+//TODO update wallets after and receving
+

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:neo_wallet/helpers.dart';
 import 'package:neo_wallet/models/wallets_users_response.dart';
 import 'package:neo_wallet/services/auth_services.dart';
@@ -9,12 +8,12 @@ import 'package:neo_wallet/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class ManagamentPage extends StatefulWidget {
+class UserWalletSelect extends StatefulWidget {
   @override
-  _ManagamentPageState createState() => _ManagamentPageState();
+  _UserWalletSelectState createState() => _UserWalletSelectState();
 }
 
-class _ManagamentPageState extends State<ManagamentPage> {
+class _UserWalletSelectState extends State<UserWalletSelect> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
@@ -34,7 +33,7 @@ class _ManagamentPageState extends State<ManagamentPage> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Ionicons.wallet),
+            icon: Icon(Icons.wallet_giftcard_rounded),
             onPressed: () {
               Navigator.pushNamed(
                 context,
@@ -48,7 +47,7 @@ class _ManagamentPageState extends State<ManagamentPage> {
           onPressed: () {
             mostrarAlertaCerrarSesion(context, logOut);
           },
-          icon: Icon(Ionicons.exit_outline),
+          icon: Icon(Icons.exit_to_app),
         ),
       ),
       body: Container(
@@ -59,6 +58,20 @@ class _ManagamentPageState extends State<ManagamentPage> {
               height: 10,
             ),
             Expanded(
+              /*  child: StreamBuilder(
+                stream: walletServies.userWalletsStream,
+                builder:
+                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  if (snapshot.hasData) {
+                    return _createListWallets(snapshot.data);
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ), */
+
               child: this.authService.userWallets.length == 0
                   ? NoInformation(
                       icon: Icons.no_accounts,
@@ -131,11 +144,20 @@ class _ManagamentPageState extends State<ManagamentPage> {
         subtitle: Text('${wallet.balance}'),
         trailing: Icon(Icons.edit),
         onTap: () {
-          Navigator.pushNamed(
-            context,
-            'transactionByWallet',
-            arguments: wallet,
-          );
+          if (wallet.balance > 0) {
+            Navigator.pushNamed(context, 'sendPage', arguments: wallet);
+          } else {
+            final snackBar = SnackBar(
+              //TODO change the color
+              content: Text('Esta billetera no tiene saldo'),
+              action: SnackBarAction(
+                label: 'ok',
+                onPressed: () {},
+              ),
+            );
+
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
         },
       ),
     );

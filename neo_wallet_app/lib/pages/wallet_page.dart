@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:neo_wallet/models/transactions_response.dart';
 import 'package:neo_wallet/services/auth_services.dart';
 import 'package:provider/provider.dart';
@@ -44,7 +45,9 @@ class _WalletPageState extends State<WalletPage> {
                   return SmartRefresher(
                       onRefresh: _loadTransactions,
                       controller: _refreshController,
-                      child: createTransaction(snapshot.data));
+                      child: TransactionsInfo(
+                        userTransaction: snapshot.data,
+                      ));
                 } else {
                   return Center(child: CircularProgressIndicator());
                 }
@@ -58,6 +61,7 @@ class _WalletPageState extends State<WalletPage> {
 
   Widget _createWalletData(BuildContext context) {
     final mediaQuery = MediaQuery.of(context).size;
+    final authServices = Provider.of<AuthService>(context);
 
     final titleStyle = TextStyle(
         color: Colors.white, fontSize: 23, fontWeight: FontWeight.w500);
@@ -86,14 +90,16 @@ class _WalletPageState extends State<WalletPage> {
           children: [
             Column(
               children: [
-                Text('Etherum', style: titleStyle),
-                Text('1740.58 USD per ETH', style: subTitleStyle),
+                Text('Bolivianos', style: titleStyle),
+                Text('${authServices.calculateBalance()}',
+                    style: subTitleStyle),
               ],
             ),
             Column(
               children: [
                 Text('0.00000000012 ETH', style: titleStyle),
-                Text('0.47 USD', style: subTitleStyle),
+                Text('${authServices.calculateBalance() / 6.96} USD',
+                    style: subTitleStyle),
               ],
             ),
             Row(
@@ -101,16 +107,16 @@ class _WalletPageState extends State<WalletPage> {
               children: [
                 ButtonWithIcon(
                   label: 'Enviar',
-                  icon: (Icons.send_and_archive_rounded),
+                  icon: (Ionicons.paper_plane),
                   buttonBorderPrimary: false,
                   onPressed: () => {
                     /* Navigator.pushNamed(context, 'sendPage'); */
-                    Navigator.pushNamed(context, 'usersWallets'),
+                    Navigator.pushNamed(context, 'userWalletSelect'),
                   },
                 ),
                 ButtonWithIcon(
                   label: 'Recibir',
-                  icon: (Icons.qr_code),
+                  icon: Ionicons.qr_code,
                   buttonBorderPrimary: false,
                   onPressed: () {
                     Navigator.pushNamed(context, 'newWallet',

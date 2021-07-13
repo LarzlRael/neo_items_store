@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 
 import 'package:neo_wallet/helpers.dart';
 import 'package:neo_wallet/models/usuario.dart';
@@ -6,6 +7,7 @@ import 'package:neo_wallet/models/wallets_users_response.dart';
 import 'package:neo_wallet/services/auth_services.dart';
 import 'package:neo_wallet/services/socket_service.dart';
 import 'package:neo_wallet/services/transactions_services.dart';
+import 'package:neo_wallet/services/wallet_services.dart';
 import 'package:neo_wallet/widgets/wallet_status.dart';
 import 'package:neo_wallet/widgets/widgets.dart';
 import 'package:clipboard/clipboard.dart';
@@ -33,19 +35,21 @@ class _SendPageState extends State<SendPage> {
   late Usuario usuario;
   late AuthService authService;
   late SnackBar snackBar;
-
+  late WalletServices walletServices;
   @override
   void initState() {
-    transactionsServices =
-        Provider.of<TransactionsServices>(context, listen: false);
     socketService = Provider.of<SocketService>(context, listen: false);
     this.authService = Provider.of<AuthService>(context, listen: false);
     usuario = authService.usuario;
+    walletServices = WalletServices();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    transactionsServices =
+        Provider.of<TransactionsServices>(context, listen: false);
+
     this.walletArgument =
         ModalRoute.of(context)!.settings.arguments as UserWallet;
 
@@ -70,7 +74,7 @@ class _SendPageState extends State<SendPage> {
   Widget containerElements(BuildContext context) {
     final size = 16.0;
     return Container(
-      padding: EdgeInsets.all(15),
+      padding: EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -105,13 +109,13 @@ class _SendPageState extends State<SendPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ButtonWithIcon(
-                icon: Icons.qr_code,
+                icon: Ionicons.qr_code,
                 label: 'Scanear',
                 buttonBorderPrimary: true,
                 onPressed: scanQr,
               ),
               ButtonWithIcon(
-                icon: Icons.paste,
+                icon: Ionicons.clipboard_outline,
                 label: 'Pegar',
                 buttonBorderPrimary: false,
                 onPressed: pasteValue,
@@ -156,15 +160,18 @@ class _SendPageState extends State<SendPage> {
     return Container(
       width: double.infinity,
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          shape: StadiumBorder(),
-          padding: EdgeInsets.symmetric(vertical: 15),
-        ),
-        onPressed: this.transactionsServices.isSending
-            ? null
-            : () async => {sendAmount()},
-        child: Text('Enviar'),
-      ),
+          style: ElevatedButton.styleFrom(
+            shape: StadiumBorder(),
+            padding: EdgeInsets.symmetric(vertical: 15),
+          ),
+          onPressed: this.transactionsServices.isSending
+              ? null
+              : () async {
+                  await sendAmount();
+                },
+          child: !this.transactionsServices.isSending
+              ? Text('Enviar')
+              : CircularProgressIndicator()),
     );
   }
 
@@ -199,7 +206,7 @@ class _SendPageState extends State<SendPage> {
     );
   }
 
-  void sendAmount() async {
+  Future sendAmount() async {
     if (this.walletDirectionToSend.text.length == 0) {
       return mostrarAlerta(context, 'Error',
           'Hubo un error en la transaccion, revise la direccion de envio');
@@ -223,8 +230,10 @@ class _SendPageState extends State<SendPage> {
     if (respOK) {
       /* socketService.emit('transaction-real-time', (respOK.newTransactionRaw)); */
       showSnackBarNotification();
-
-      Navigator.pushNamed(context, 'home');
+      // update the wallet state
+      this.authService.userWallets =
+          await this.walletServices.getUsersWallets();
+      /*  Navigator.pushNamed(context, 'home'); */
     } else {
       mostrarAlerta(context, 'Error',
           'Hubo un error en la transaccion, revise la direccion de envio');

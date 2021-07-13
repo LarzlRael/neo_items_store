@@ -25,14 +25,36 @@ class AuthService with ChangeNotifier {
 
   bool _authtecating = false;
 
-  final _storage = FlutterSecureStorage();
+  bool get autenticando => this._authtecating;
 
   set autenticando(bool valor) {
     this._authtecating = valor;
     notifyListeners();
   }
 
-  bool get autenticando => this._authtecating;
+  double balance = 0;
+
+  double calculateBalance() {
+    double totalBalance = 0;
+    if (this.userWallets.length == 0) {
+      return 0;
+    }
+
+    for (var item in this.userWallets) {
+      totalBalance = totalBalance + item.balance;
+    }
+
+    this.totalBalance = totalBalance;
+    return totalBalance;
+  }
+
+  double _totalBalance = 0;
+
+  double get totalBalance => this._totalBalance;
+
+  set totalBalance(double value) => this._totalBalance = value;
+
+  final _storage = FlutterSecureStorage();
 
   // token static getters
 

@@ -29,6 +29,7 @@ class TransactionsServices with ChangeNotifier {
   bool _isSending = false;
 
   set isSending(bool valor) {
+    print('change value $valor');
     this._isSending = valor;
     notifyListeners();
   }
@@ -77,12 +78,12 @@ class TransactionsServices with ChangeNotifier {
       body: jsonEncode(data),
     );
 
+    this.isSending = false;
+
     if (resp.statusCode == 200) {
       final datax = sendAmoutResponseFromJson(resp.body);
-      this._isSending = false;
       return datax.ok;
     } else {
-      this.isSending = false;
       return false;
     }
   }
@@ -100,5 +101,22 @@ class TransactionsServices with ChangeNotifier {
     final transactionsResponse = transactionsResponseFromJson(resp.body);
 
     return transactionsResponse.userTransactions;
+  }
+
+  Future<List<UserTransaction>> transactionByWallet(String walletId) async {
+    final data = {'walletId': walletId};
+
+    final resp = await http.post(
+      Uri.parse(
+        '${Enviroments.serverHttpUrl}/transactions/transactionByWallet',
+      ),
+      headers: {
+        'Content-type': 'application/json',
+        'x-token': await AuthService.getToken(),
+      },
+      body: jsonEncode(data),
+    );
+
+    return transactionsResponseFromJson(resp.body).userTransactions;
   }
 }

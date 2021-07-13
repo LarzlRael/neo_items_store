@@ -34,13 +34,85 @@ export const getWalletsByUser = async (req: Request, res: Response) => {
 
     try {
         const { uid } = req;
-        const userWallets = await WalletModel.find({ 'idUser': uid }).sort('-createdAt');
+        const userWallets = await WalletModel.find({ idUser: uid }).sort('-createdAt');
 
         res.json({
             ok: true,
             userWallets
-
         })
+    } catch (error) {
+        console.log(error);
+    }
+}
+export const renameWallet = async (req: Request, res: Response) => {
+
+    try {
+        const { uid } = req;
+
+        // TODO revisar que la billetera pertenezca a esta persona
+        // TODO check if the wallet is bearer of this user
+        const { walletId } = req.body;
+        const { newName } = req.body;
+
+        const userWalletUpdated = await WalletModel.findOne({ _id: walletId });
+        if (userWalletUpdated) {
+            userWalletUpdated!.walletName = newName;
+            await userWalletUpdated?.save();
+            res.json({
+                ok: true,
+                userWalletUpdated
+            })
+        } else {
+            res.status(400).json({
+                ok: false,
+                msg: 'No se econtro la billetera'
+            })
+        }
+    } catch (error) {
+        console.log(error);
+    }
+
+}
+
+export const deleteWallet = async (req: Request, res: Response) => {
+
+    try {
+        const { walletId } = req.body;
+
+        const { uid } = req;
+
+        /* const userWallets = await WalletModel.find({ idUser: uid }).sort('-createdAt');
+
+        if (userWallets.length == 1) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'No puedes eliminar esta billetera, por que solo tienes una'
+            });
+        } */
+
+        const currentWallet = await WalletModel.findById(walletId).sort('-createdAt');
+
+        if (currentWallet) {
+            if (currentWallet.balance > 0) {
+                return res.status(400).json({
+                    ok: false,
+                    msg: 'Esta billetara aun tiene saldo, transfieralo a otra billetara'
+                });
+            } else {
+                await WalletModel.findOneAndDelete(walletId);
+                res.json({
+                    ok: true,
+                    msg: 'billetera Eliminada correctamente'
+                });
+            }
+
+        } else {
+            return res.status(400).json({
+                ok: false,
+                msg: 'La billetera no existe'
+            });
+        }
+
     } catch (error) {
         console.log(error);
     }

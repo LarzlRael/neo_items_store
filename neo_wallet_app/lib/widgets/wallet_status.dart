@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:neo_wallet/services/auth_services.dart';
 import 'package:neo_wallet/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 class WalletStatus extends StatelessWidget {
   final bool showButton;
@@ -11,6 +13,7 @@ class WalletStatus extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context).size;
+    final authService = Provider.of<AuthService>(context);
 
     final titleStyle = TextStyle(
         color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500);
@@ -40,14 +43,15 @@ class WalletStatus extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    Text('Etherum', style: titleStyle),
-                    Text('1740.58 USD per ETH', style: subTitleStyle),
+                    Text('Bolivianos', style: titleStyle),
+                    Text('${authService.totalBalance}', style: subTitleStyle),
                   ],
                 ),
                 Column(
                   children: [
                     Text('0.00000000012 ETH', style: titleStyle),
-                    Text('0.47 USD', style: subTitleStyle),
+                    Text('${authService.totalBalance / 6.96} USD',
+                        style: subTitleStyle),
                   ],
                 ),
                 showButton

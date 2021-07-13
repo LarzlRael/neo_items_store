@@ -21,5 +21,10 @@ router.post('/send', [
 router.get('/gettransactions', validarJwt_1.validarJWT, transaction_1.getTransactionsByUser);
 //History
 router.get('/transactionsHistory', validarJwt_1.validarJWT, transaction_1.getTransactionsHistory);
+router.post('/transactionByWallet', [
+    express_validator_1.check('walletId', 'Debes ingresar el id de la billetera').not().isEmpty(),
+    middelwares_1.validarCampos,
+    validarJwt_1.validarJWT
+], transaction_1.getTransactionByWallet);
 exports.default = router;
 //# sourceMappingURL=transaction.js.map

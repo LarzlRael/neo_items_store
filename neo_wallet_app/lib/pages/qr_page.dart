@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:neo_wallet/models/wallets_users_response.dart';
 import 'package:neo_wallet/services/auth_services.dart';
 import 'package:neo_wallet/services/qr_services.dart';
@@ -14,8 +15,8 @@ class QrPage extends StatefulWidget {
 }
 
 class _QrPageState extends State<QrPage> {
-  late UserWallet args;
   late SnackBar _snackBar;
+  late UserWallet args;
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +108,10 @@ class _QrPageState extends State<QrPage> {
                   );
                   ScaffoldMessenger.of(context).showSnackBar(_snackBar);
                 },
-                child: Text('Copiar codigo'))
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [Text('Copiar codigo'), Icon(Ionicons.copy)],
+                ))
           ],
         ),
       ),

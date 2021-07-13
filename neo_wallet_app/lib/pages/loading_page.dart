@@ -15,7 +15,24 @@ class LoadingPage extends StatelessWidget {
         future: checkLoginState(context),
         builder: (context, snapshot) {
           return Center(
-            child: CircularProgressIndicator(),
+            child: FittedBox(
+              child: Container(
+                padding: EdgeInsets.all(25),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(),
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                ),
+                child: Column(
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 10),
+                    Text('Cargando ...',
+                        style: TextStyle(color: Colors.black54)),
+                  ],
+                ),
+              ),
+            ),
           );
         },
       ),

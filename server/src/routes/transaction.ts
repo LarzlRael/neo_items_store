@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { getTransactionsByUser, sendAmount, getTransactionsHistory } from '../controllers/transaction';
+import { getTransactionsByUser, sendAmount, getTransactionsHistory, getTransactionByWallet } from '../controllers/transaction';
 import { validarCampos } from '../middlewares/middelwares';
 import { validarJWT } from '../middlewares/validarJwt';
 
@@ -21,7 +21,7 @@ router.post('/send',
         check('userOriginName', 'Debes proveer el nombre del usuario de origen').not().isEmpty(),
 
         validarCampos,
-        validarJWT, 
+        validarJWT,
     ], sendAmount);
 
 ///transactions/getransactions/
@@ -29,5 +29,12 @@ router.get('/gettransactions', validarJWT, getTransactionsByUser);
 
 //History
 router.get('/transactionsHistory', validarJWT, getTransactionsHistory);
+
+
+router.post('/transactionByWallet', [
+    check('walletId', 'Debes ingresar el id de la billetera').not().isEmpty(),
+    validarCampos,
+    validarJWT],
+    getTransactionByWallet);
 
 export default router;

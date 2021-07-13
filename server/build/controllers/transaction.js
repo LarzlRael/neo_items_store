@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTransactionsHistory = exports.getTransactionsByUser = exports.sendAmount = void 0;
+exports.getTransactionsHistory = exports.getTransactionsByUser = exports.getTransactionByWallet = exports.sendAmount = void 0;
 const transacionModel_1 = __importDefault(require("./../models/transacionModel"));
 const walletModel_1 = __importDefault(require("./../models/walletModel"));
 const userModel_1 = __importDefault(require("../models/userModel"));
@@ -65,6 +65,25 @@ const sendAmount = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.sendAmount = sendAmount;
+const getTransactionByWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { walletId } = req.body;
+    if (verifyId(walletId)) {
+        const userTransactions = yield transacionModel_1.default.find({
+            $or: [{ userOriginWallet: walletId }, { userTargetWallet: walletId }],
+        }).sort('-createdAt ');
+        return res.json({
+            ok: true,
+            userTransactions
+        });
+    }
+    else {
+        return res.status(400).json({
+            ok: true,
+            msg: 'Hubo un error en la consulta'
+        });
+    }
+});
+exports.getTransactionByWallet = getTransactionByWallet;
 const getTransactionsByUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { uid } = req;
     const getuserTransaction = yield transacionModel_1.default.find({

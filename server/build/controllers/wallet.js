@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getWalletsByUser = exports.createWallet = void 0;
+exports.deleteWallet = exports.renameWallet = exports.getWalletsByUser = exports.createWallet = void 0;
 const walletModel_1 = __importDefault(require("../models/walletModel"));
 const userModel_1 = __importDefault(require("../models/userModel"));
 const createWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -38,7 +38,7 @@ exports.createWallet = createWallet;
 const getWalletsByUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { uid } = req;
-        const userWallets = yield walletModel_1.default.find({ 'idUser': uid }).sort('-createdAt');
+        const userWallets = yield walletModel_1.default.find({ idUser: uid }).sort('-createdAt');
         res.json({
             ok: true,
             userWallets
@@ -49,4 +49,72 @@ const getWalletsByUser = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.getWalletsByUser = getWalletsByUser;
+const renameWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { uid } = req;
+        // TODO revisar que la billetera pertenezca a esta persona
+        // TODO check if the wallet is bearer of this user
+        const { walletId } = req.body;
+        const { newName } = req.body;
+        const userWalletUpdated = yield walletModel_1.default.findOne({ _id: walletId });
+        if (userWalletUpdated) {
+            userWalletUpdated.walletName = newName;
+            yield (userWalletUpdated === null || userWalletUpdated === void 0 ? void 0 : userWalletUpdated.save());
+            res.json({
+                ok: true,
+                userWalletUpdated
+            });
+        }
+        else {
+            res.status(400).json({
+                ok: false,
+                msg: 'No se econtro la billetera'
+            });
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.renameWallet = renameWallet;
+const deleteWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { walletId } = req.body;
+        const { uid } = req;
+        /* const userWallets = await WalletModel.find({ idUser: uid }).sort('-createdAt');
+
+        if (userWallets.length == 1) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'No puedes eliminar esta billetera, por que solo tienes una'
+            });
+        } */
+        const currentWallet = yield walletModel_1.default.findById(walletId).sort('-createdAt');
+        if (currentWallet) {
+            if (currentWallet.balance > 0) {
+                return res.status(400).json({
+                    ok: false,
+                    msg: 'Esta billetara aun tiene saldo, transfieralo a otra billetara'
+                });
+            }
+            else {
+                yield walletModel_1.default.findOneAndDelete(walletId);
+                res.json({
+                    ok: true,
+                    msg: 'billetera Eliminada correctamente'
+                });
+            }
+        }
+        else {
+            return res.status(400).json({
+                ok: false,
+                msg: 'La billetera no existe'
+            });
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.deleteWallet = deleteWallet;
 //# sourceMappingURL=wallet.js.map

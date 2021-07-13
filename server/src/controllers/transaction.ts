@@ -7,7 +7,7 @@ import { sendPushNotification } from '../helpers/pushNotification';
 
 export const sendAmount = async (req: Request, res: Response) => {
 
-    const { amount, userOriginWallet, userTargetWallet,userOriginName } = req.body;
+    const { amount, userOriginWallet, userTargetWallet, userOriginName } = req.body;
 
     const { uid } = req;
 
@@ -78,6 +78,36 @@ export const sendAmount = async (req: Request, res: Response) => {
     }
 }
 
+
+export const getTransactionByWallet = async (req: Request, res: Response) => {
+
+
+    const { walletId } = req.body;
+
+    if (verifyId(walletId)) {
+
+        
+        const userTransactions = await TransactionModel.find({
+
+            $or: [{ userOriginWallet: walletId }, { userTargetWallet: walletId }],
+
+        }).sort('-createdAt ');
+
+        return res.json({
+            ok: true,
+            userTransactions
+        })
+    } else {
+        return res.status(400).json({
+            ok: true,
+            msg: 'Hubo un error en la consulta'
+        })
+
+    }
+
+
+
+}
 
 export const getTransactionsByUser = async (req: Request, res: Response) => {
 
