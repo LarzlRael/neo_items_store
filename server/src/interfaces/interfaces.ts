@@ -16,6 +16,7 @@ export interface IUser {
     email: string;
     password?: string;
     online?: boolean;
+    activated?: boolean;
     devices?: String[],
     wallets: IWallet[]
 }

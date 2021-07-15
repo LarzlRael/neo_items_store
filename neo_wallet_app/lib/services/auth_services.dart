@@ -105,7 +105,7 @@ class AuthService with ChangeNotifier {
       body: jsonEncode(data),
     );
 
-    this.autenticando = true;
+    this.autenticando = false;
 
     if (resp.statusCode == 200) {
       saveUserinfo(resp.body);
@@ -153,14 +153,13 @@ class AuthService with ChangeNotifier {
     final data = {
       'deviceId': tokenIdDevice,
     };
-    final token = await this._storage.read(key: 'token');
 
     final resp = await http.post(
       Uri.parse('${Enviroments.serverHttpUrl}/auth/saveNewDevice'),
       body: jsonEncode(data),
       headers: {
         'Content-type': 'application/json',
-        'x-token': token != null ? token : '',
+        'x-token': await AuthService.getToken(),
       },
     );
 
@@ -185,4 +184,5 @@ class AuthService with ChangeNotifier {
     this._userWallets = this.usuario.wallets;
     await this._saveToken(loginResponse.token);
   }
+  
 }

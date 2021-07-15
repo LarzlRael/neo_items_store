@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
 import { IPayload } from '../interfaces/interfaces';
 
-export const generarJWT = (uid: any) => {
+export const generarJWT = (uid: any, expiresIn: string | number = '24h') => {
     return new Promise((resolve, reject) => {
         const payload = { uid };
 
         jwt.sign(payload, process.env.JWT_KEY!, {
-            expiresIn: '24h'
+            expiresIn: expiresIn
         }, (err, token) => {
             if (err) {
                 reject('No se pudo generar el JWT');
@@ -14,17 +14,16 @@ export const generarJWT = (uid: any) => {
                 resolve(token);
             }
         });
-    })
+    });
 }
 
 
 export const comprobarJWT = (token: string = '') => {
 
-
     try {
         const { uid } = jwt.verify(token, process.env.JWT_KEY!) as IPayload;
-        return [true, uid];
+        return true;
     } catch (error) {
-        return [false, null];
+        return false
     }
 }

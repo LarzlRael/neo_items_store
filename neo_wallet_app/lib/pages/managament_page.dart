@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:neo_wallet/helpers.dart';
+
 import 'package:neo_wallet/models/wallets_users_response.dart';
 import 'package:neo_wallet/services/auth_services.dart';
 import 'package:neo_wallet/services/wallet_services.dart';

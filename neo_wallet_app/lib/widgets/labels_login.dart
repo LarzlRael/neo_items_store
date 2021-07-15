@@ -33,10 +33,15 @@ class Labels extends StatelessWidget {
               Navigator.pushNamed(context, route);
             },
           ),
-          SizedBox(height: 5),
-          Text(
-            'Términos y condiciones de uso',
-            style: TextStyle(fontWeight: FontWeight.w200, fontSize: 15),
+          SizedBox(height: 10),
+          GestureDetector(
+            onTap: () {
+              print('ir a recuperar contrseña');
+            },
+            child: Text(
+              'Olvide mi contraseña',
+              style: TextStyle(fontWeight: FontWeight.w200, fontSize: 15),
+            ),
           ),
         ],
       ),

@@ -15,7 +15,6 @@ class QrPage extends StatefulWidget {
 }
 
 class _QrPageState extends State<QrPage> {
-  late SnackBar _snackBar;
   late UserWallet args;
 
   @override
@@ -92,25 +91,18 @@ class _QrPageState extends State<QrPage> {
                 onPressed: () async {
                   await FlutterClipboard.copy(args.id);
 
-                  this._snackBar = SnackBar(
-                    /* backgroundColor: Colors.black45, */
-                    content: Text(
-                      'Codigo Copiado',
-                      style: TextStyle(
-                          /* color: Colors.white, */
-                          ),
-                    ),
-                    action: SnackBarAction(
-                      label: 'ok',
-                      /* textColor: Colors.white, */
-                      onPressed: () {},
-                    ),
+                  showSnackBarNotification(
+                    message: 'Codigo Copiado',
+                    color: Colors.blue,
+                    context: context,
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(_snackBar);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [Text('Copiar codigo'), Icon(Ionicons.copy)],
+                  children: [
+                    Text('Copiar codigo'),
+                    Icon(Ionicons.copy),
+                  ],
                 ))
           ],
         ),

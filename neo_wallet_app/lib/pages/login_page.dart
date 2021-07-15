@@ -100,7 +100,12 @@ class __FormState extends State<_Form> {
                         this.tokenDeviceId);
                     if (loginOk) {
                       /* socketService.connect(); */
-                      Navigator.pushReplacementNamed(context, 'home');
+                      if (authService.usuario.activated) {
+                        Navigator.pushReplacementNamed(context, 'home');
+                      } else {
+                        Navigator.pushNamed(context, 'verifyAccount');
+                      }
+                      /* Navigator.pushReplacementNamed(context, 'home'); */
                     } else {
                       //crear alerta
                       mostrarAlerta(context, 'Login incorrecto',

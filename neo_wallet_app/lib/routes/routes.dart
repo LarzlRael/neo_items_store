@@ -11,6 +11,7 @@ import 'package:neo_wallet/pages/transaction_by_wallet.dart';
 import 'package:neo_wallet/pages/user_profile.dart';
 import 'package:neo_wallet/pages/user_transactions_history_page.dart';
 import 'package:neo_wallet/pages/users_wallet_select.dart';
+import 'package:neo_wallet/pages/verify_account.dart';
 
 final Map<String, Widget Function(BuildContext)> appRoutes = {
   /* Register and login  */
@@ -31,4 +32,5 @@ final Map<String, Widget Function(BuildContext)> appRoutes = {
   'transactionByWallet': (_) => TransactionByWallet(),
 
   'userProfile': (_) => UserProfile(),
+  'verifyAccount': (_) => VerifyAccount(),
 };

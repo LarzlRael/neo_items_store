@@ -4,6 +4,8 @@ import 'package:neo_wallet/services/auth_services.dart';
 import 'package:neo_wallet/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
+import '../helpers.dart';
+
 class UserProfile extends StatefulWidget {
   @override
   _UserProfileState createState() => _UserProfileState();
@@ -23,13 +25,33 @@ class _UserProfileState extends State<UserProfile> {
           _createBackBround(size),
           _loginForm(context),
           Positioned(
-            top: 20,
-            child: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                print('volviendo atras');
-                Navigator.pop(context);
-              },
+            child: SafeArea(
+              child: Container(
+                width: double.infinity,
+                /* color: Colors.amber, */
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: () {
+                        print('volviendo atras');
+                        Navigator.pop(context);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.exit_to_app),
+                      onPressed: () {
+                        mostrarAlertaCerrarSesion(
+                            context: context,
+                            onPressed: logOut,
+                            title: 'Cerrar Sesion',
+                            subtitle: '¿Esta seguro de cerrar sesión?');
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
@@ -174,5 +196,10 @@ class _UserProfileState extends State<UserProfile> {
         ),
       ],
     );
+  }
+
+  void logOut() {
+    Navigator.pushReplacementNamed(context, 'login');
+    authServices.logout();
   }
 }

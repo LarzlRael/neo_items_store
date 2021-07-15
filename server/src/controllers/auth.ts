@@ -133,5 +133,5 @@ const vertifyUserBearer = async (idDevice: string) => {
 
     await userExist[0].save();
 
-
 }
+

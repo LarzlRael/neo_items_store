@@ -1,0 +1,96 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-family: "Roboto", arial;
+    box-sizing: border-box;
+}
+body {
+    background: #f5f6f7;
+}
+
+.container {
+    width: 900px;
+    max-width: 90%;
+    margin: auto;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    z-index: 10;
+    background: white;
+    border: 1px solid #ccc;
+}
+
+.container .logo {
+    height: 150px;
+    background: #1b242d;
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    justify-content: center;
+    padding: 0 3rem;
+}
+
+.container .confirm-container {
+    padding: 2rem 3rem;
+}
+.container .confirm-container .title {
+    color: #47505d;
+    font-size: 1.5rem;
+    margin: 2rem 0rem;
+}
+
+.container-button {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin: 2rem 0;
+}
+.container .confirm-container a {
+    text-decoration: none;
+    padding: 1rem 4rem;
+    color: white;
+    background: #1b242d;
+    text-align: center;
+    border: none;
+    font-weight: bold;
+    font-size: 1rem;
+    border-radius: 40px;
+    transition: all 0.3s;
+}
+
+.container .confirm-container a:hover {
+    cursor: pointer;
+    background: #2a445e;
+}
+
+.pharagraph {
+    color: #525a67;
+}
+.verify-icon {
+    color: #5bd667;
+    animation-timing-function: ease;
+    animation-name: bounce-5;
+}
+
+@keyframes bounce-5 {
+    0% {
+        transform: scale(1, 1) translateY(0);
+    }
+    10% {
+        transform: scale(1.1, 0.9) translateY(0);
+    }
+    30% {
+        transform: scale(0.9, 1.1) translateY(-100px);
+    }
+    50% {
+        transform: scale(1, 1) translateY(0);
+    }
+    57% {
+        transform: scale(1, 1) translateY(-7px);
+    }
+    64% {
+        transform: scale(1, 1) translateY(0);
+    }
+    100% {
+        transform: scale(1, 1) translateY(0);
+    }
+}

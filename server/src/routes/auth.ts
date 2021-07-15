@@ -34,6 +34,7 @@ router.post('/saveNewDevice', [
 
 
 
+
 router.get('/renew', validarJWT, renewToken);
 
 export default router;

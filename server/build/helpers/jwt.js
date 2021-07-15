@@ -5,11 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.comprobarJWT = exports.generarJWT = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const generarJWT = (uid) => {
+const generarJWT = (uid, expiresIn = '24h') => {
     return new Promise((resolve, reject) => {
         const payload = { uid };
         jsonwebtoken_1.default.sign(payload, process.env.JWT_KEY, {
-            expiresIn: '24h'
+            expiresIn: expiresIn
         }, (err, token) => {
             if (err) {
                 reject('No se pudo generar el JWT');
@@ -24,10 +24,10 @@ exports.generarJWT = generarJWT;
 const comprobarJWT = (token = '') => {
     try {
         const { uid } = jsonwebtoken_1.default.verify(token, process.env.JWT_KEY);
-        return [true, uid];
+        return true;
     }
     catch (error) {
-        return [false, null];
+        return false;
     }
 };
 exports.comprobarJWT = comprobarJWT;

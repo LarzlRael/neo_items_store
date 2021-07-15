@@ -91,7 +91,12 @@ class __FormState extends State<_Form> {
                       nameCtrl.text.trim(),
                     );
                     if (registerOk == true) {
-                      Navigator.pushReplacementNamed(context, 'home');
+                      /* Navigator.pushReplacementNamed(context, 'home'); */
+                      if (authService.usuario.activated) {
+                        Navigator.pushReplacementNamed(context, 'home');
+                      } else {
+                        Navigator.pushNamed(context, 'verifyAccount');
+                      }
                     } else {
                       mostrarAlerta(context, 'Registro incorrecto', registerOk);
                     }

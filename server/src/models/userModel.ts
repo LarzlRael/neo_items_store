@@ -22,6 +22,10 @@ const UserSchema = new Schema<IUser>({
         type: Boolean,
         default: false
     },
+    activated: {
+        type: Boolean,
+        default: false
+    },
     wallets: [
         {
             type: Schema.Types.ObjectId,

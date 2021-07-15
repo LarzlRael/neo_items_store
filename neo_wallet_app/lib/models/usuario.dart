@@ -18,9 +18,11 @@ class Usuario {
     required this.email,
     required this.uid,
     required this.devices,
+    required this.activated,
   });
 
   bool online;
+  bool activated;
   String name;
   String email;
   List<UserWallet> wallets;
@@ -35,6 +37,7 @@ class Usuario {
         name: json["name"],
         email: json["email"],
         uid: json["uid"],
+        activated: json["activated"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -42,5 +45,6 @@ class Usuario {
         "name": name,
         "email": email,
         "uid": uid,
+        "activated": activated,
       };
 }

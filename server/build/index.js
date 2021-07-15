@@ -9,10 +9,12 @@ const app = express_1.default();
 const morgan_1 = __importDefault(require("morgan"));
 require('dotenv').config();
 const path_1 = __importDefault(require("path"));
+const express_handlebars_1 = __importDefault(require("express-handlebars"));
 const auth_1 = __importDefault(require("./routes/auth"));
 const wallet_1 = __importDefault(require("./routes/wallet"));
 const transaction_1 = __importDefault(require("./routes/transaction"));
 const qr_1 = __importDefault(require("./routes/qr"));
+const mail_1 = __importDefault(require("./routes/mail"));
 //DB config
 require('./database/databaseConfig').dbConnection();
 const port = process.env.PORT;
@@ -20,9 +22,17 @@ const port = process.env.PORT;
 const server = require('http').createServer(app);
 exports.io = require('socket.io')(server);
 require("./sockets/socket");
-/* app.set("view engine", "ejs"); */
+app.set('views', path_1.default.join(__dirname, 'views'));
+app.engine('.hbs', express_handlebars_1.default({
+    defaultLayout: 'main',
+    layoutsDir: path_1.default.join(app.get('views'), 'layouts'),
+    partialsDir: path_1.default.join(app.get('views'), 'partials'),
+    extname: '.hbs'
+}));
+app.set('view engine', '.hbs');
 //Lectura y parse de BODY
 app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: false }));
 app.use(morgan_1.default('dev'));
 //Index server index
 const publicPath = path_1.default.resolve(__dirname, 'public');
@@ -32,6 +42,7 @@ app.use('/auth', auth_1.default);
 app.use('/wallet', wallet_1.default);
 app.use('/transactions', transaction_1.default);
 app.use('/qr', qr_1.default);
+app.use('/sendmail', mail_1.default);
 server.listen(port, () => {
     console.log(`Server on port ${port}`);
 });

@@ -8,6 +8,7 @@ import 'package:neo_wallet/services/auth_services.dart';
 import 'package:neo_wallet/services/socket_service.dart';
 import 'package:neo_wallet/services/transactions_services.dart';
 import 'package:neo_wallet/services/wallet_services.dart';
+import 'package:neo_wallet/utils/utils.dart';
 import 'package:neo_wallet/widgets/wallet_status.dart';
 import 'package:neo_wallet/widgets/widgets.dart';
 import 'package:clipboard/clipboard.dart';
@@ -229,7 +230,10 @@ class _SendPageState extends State<SendPage> {
         );
     if (respOK) {
       /* socketService.emit('transaction-real-time', (respOK.newTransactionRaw)); */
-      showSnackBarNotification();
+      showSnackBarNotification(
+          context: context,
+          message: 'Enviado correctamente',
+          color: Colors.green);
       // update the wallet state
       this.authService.userWallets =
           await this.walletServices.getUsersWallets();
@@ -245,21 +249,5 @@ class _SendPageState extends State<SendPage> {
     setState(() {
       this.walletDirectionToSend.text = value.length != 0 ? value : '';
     });
-  }
-
-  void showSnackBarNotification() {
-    this.snackBar = SnackBar(
-      backgroundColor: Colors.green,
-      content: Text('Enviado correctamente',
-          style: TextStyle(
-            color: Colors.white,
-          )),
-      action: SnackBarAction(
-        label: 'ok',
-        textColor: Colors.white,
-        onPressed: () {},
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
