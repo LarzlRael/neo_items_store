@@ -22,6 +22,7 @@ const port = process.env.PORT;
 const server = require('http').createServer(app);
 exports.io = require('socket.io')(server);
 require("./sockets/socket");
+app.enable('trust proxy');
 app.set('views', path_1.default.join(__dirname, 'views'));
 app.engine('.hbs', express_handlebars_1.default({
     defaultLayout: 'main',

@@ -19,7 +19,24 @@ class MailServices {
       },
     );
 
-    print(resp.body);
+    if (resp.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> forgotPassword(String email) async {
+    final data = {'email': email};
+
+    final resp = await http.post(
+      Uri.parse('${Enviroments.serverHttpUrl}/sendmail/recoverypassword'),
+      body: jsonEncode(data),
+      headers: {
+        'Content-type': 'application/json',
+      },
+    );
+
     if (resp.statusCode == 200) {
       return true;
     } else {

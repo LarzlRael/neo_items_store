@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:neo_wallet/navigation/bottom_navigation.dart';
+import 'package:neo_wallet/pages/forgot_password.dart';
 import 'package:neo_wallet/pages/loading_page.dart';
 import 'package:neo_wallet/pages/login_page.dart';
 import 'package:neo_wallet/pages/managament_page.dart';
@@ -33,4 +34,5 @@ final Map<String, Widget Function(BuildContext)> appRoutes = {
 
   'userProfile': (_) => UserProfile(),
   'verifyAccount': (_) => VerifyAccount(),
+  'forgotPassword': (_) => ForgotPassword(),
 };

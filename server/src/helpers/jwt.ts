@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { IPayload } from '../interfaces/interfaces';
 
-export const generarJWT = (uid: any, expiresIn: string | number = '24h') => {
+export const generarJWT = (uid: any, expiresIn: string | number = '24h', email: string = '') => {
     return new Promise((resolve, reject) => {
-        const payload = { uid };
+        const payload = { uid, email };
 
         jwt.sign(payload, process.env.JWT_KEY!, {
             expiresIn: expiresIn

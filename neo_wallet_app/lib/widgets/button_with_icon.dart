@@ -15,19 +15,17 @@ class ButtonWithIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Expanded(
-        /* padding: EdgeInsets.symmetric(horizontal: 5),
-        color: Colors.amber, */
-        /* width: double.infinity, */
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 5),
-          child: TextButton.icon(
-            icon: Icon(icon, color: Colors.white),
-            label: Text(label, style: styleLabelButton),
-            onPressed: this.onPressed,
-            style: buttonsStyles(context),
-          ),
+    return Expanded(
+      /* padding: EdgeInsets.symmetric(horizontal: 5),
+      color: Colors.amber, */
+      /* width: double.infinity, */
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 5),
+        child: TextButton.icon(
+          icon: Icon(icon, color: Colors.white),
+          label: Text(label, style: styleLabelButton),
+          onPressed: this.onPressed,
+          style: buttonsStyles(context),
         ),
       ),
     );

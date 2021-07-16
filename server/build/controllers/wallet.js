@@ -92,7 +92,6 @@ const deleteWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         if (yield exports.verifyWalletOwner(uid, walletId)) {
             const currentWallet = yield walletModel_1.default.findById(walletId);
             if (currentWallet) {
-                console.log(currentWallet);
                 if (currentWallet.balance > 0) {
                     return res.status(400).json({
                         ok: false,

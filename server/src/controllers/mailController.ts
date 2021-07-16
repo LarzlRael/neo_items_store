@@ -1,11 +1,8 @@
 import { Request, Response } from 'express';
+import bcrypt from 'bcryptjs';
 import nodemailer from 'nodemailer';
 import UserModel from '../models/userModel';
 import { generarJWT, comprobarJWT } from '../helpers/jwt';
-
-
-
-
 
 
 
@@ -31,16 +28,17 @@ export const SendEmailActivation = async (req: Request, res: Response) => {
 
     const myUrl = `${protocol}://${hostname}`;
 
+
     try {
         const { email } = req.body;
-        const token = await generarJWT(email, '5M');
+        const token = await generarJWT('', '5M', email);
         transporter.sendMail({
             from: 'N.E.O', // sender address
             to: email, // list of receivers
             subject: "Activacion de email", // Subject line
             /* text: "Hello world?", // plain text body */
             html: `<p>
-            Para activar tu cuenta ingrese a <a href="${myUrl}/sendmail/confirm/${token}/${email}">verificar email</a>
+            Para activar tu cuenta ingrese a <a href="${myUrl}/sendmail/verifycheck/${token}">verificar email</a>
             </p>`, // html body
         });
         res.json({
@@ -54,18 +52,29 @@ export const SendEmailActivation = async (req: Request, res: Response) => {
 }
 export const sendEmailToRecoveryPassword = async (req: Request, res: Response) => {
 
+
+    const hostname = req.headers.host;
+    const protocol = req.protocol;
+
+    const myUrl = `${protocol}://${hostname}`;
+
     try {
         const { email } = req.body;
 
         const findEmail = await UserModel.findOne({ email: email });
 
         if (findEmail) {
+
+            const token = await generarJWT('', '3M', email);
+
             transporter.sendMail({
-                from: '"Fred Foo 👻" <foo@example.com>', // sender address
+                from: 'N.E.O', // sender address
                 to: email, // list of receivers
-                subject: "testing", // Subject line
+                subject: "Recuperacion de contraseña", // Subject line
                 /* text: "Hello world?", // plain text body */
-                html: "<b>Hello world from node mailer, yor has chossen for a testing user</b>", // html body
+                html: `<p>
+            Para recuperar su contraseña ingrese aqui <a href="${myUrl}/sendmail/recoverypasswordform/${token}">recuperar contraseña</a>
+            </p>`, // html body
             });
             res.json({
                 ok: true,
@@ -92,6 +101,7 @@ export const renderConfirmEmail = async (req: Request, res: Response) => {
 }
 
 export const verifyCheck = async (req: Request, res: Response) => {
+
     const { token, email } = req.params;
 
     const getUserWithThatEmail = await UserModel.findOne({ email });
@@ -103,9 +113,6 @@ export const verifyCheck = async (req: Request, res: Response) => {
     if (comprobarJWT(token)) {
 
         // TODO emit the socket event
-
-     
-
 
         var io = require('socket.io');
         res.redirect('/sendmail/verifiedemail');
@@ -121,3 +128,53 @@ export const verifyCheck = async (req: Request, res: Response) => {
 export const verifiedEmail = async (req: Request, res: Response) => {
     res.render('verifiedemail');
 }
+
+export const renderRecoveryForm = async (req: Request, res: Response) => {
+
+    const { token } = req.params;
+
+    const getUserWithThatEmail = await UserModel.findOne({ email: req.email });
+    console.log(getUserWithThatEmail);
+
+    if (getUserWithThatEmail) {
+        return res.render('recoveryPasswordForm', { token, email: req.email });
+
+    } else {
+        return res.send('Error');
+    }
+
+}
+
+export const passwordChanged = async (req: Request, res: Response) => {
+
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    const getUserWithThatEmail = await UserModel.findOne({ email: req.email });
+
+    if (getUserWithThatEmail) {
+
+        const salt = bcrypt.genSaltSync();
+
+        getUserWithThatEmail.password = bcrypt.hashSync(
+            newPassword, salt
+        );
+
+        await getUserWithThatEmail!.save();
+        return res.send('Contraseña cambiada correctamente');
+
+
+    } else {
+        res.send('Error');
+
+    }
+
+
+}
+
+/* getMyHostUrl(req:Request): string{
+const hostname = req.headers.host;
+    const protocol = req.protocol;
+
+    const myUrl = `${protocol}://${hostname}`;
+} */

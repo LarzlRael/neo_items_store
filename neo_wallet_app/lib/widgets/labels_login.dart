@@ -36,7 +36,7 @@ class Labels extends StatelessWidget {
           SizedBox(height: 10),
           GestureDetector(
             onTap: () {
-              print('ir a recuperar contrseña');
+              Navigator.pushNamed(context, 'forgotPassword');
             },
             child: Text(
               'Olvide mi contraseña',

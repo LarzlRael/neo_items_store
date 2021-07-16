@@ -91,7 +91,6 @@ const saveNewDevice = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     if (userDevices.indexOf(deviceId) === -1) {
         userDevices.push(deviceId);
         yield (userExist === null || userExist === void 0 ? void 0 : userExist.save());
-        console.log('registrando nuevo id');
         res.json({
             ok: true,
             msg: 'nuevo id de dispositivo registrado'

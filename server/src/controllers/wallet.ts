@@ -94,7 +94,7 @@ export const deleteWallet = async (req: Request, res: Response) => {
             const currentWallet = await WalletModel.findById(walletId);
 
             if (currentWallet) {
-                console.log(currentWallet);
+                
                 if (currentWallet.balance > 0) {
                     return res.status(400).json({
                         ok: false,

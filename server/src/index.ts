@@ -21,7 +21,7 @@ const server = require('http').createServer(app);
 export const io = require('socket.io')(server);
 import './sockets/socket';
 
-
+app.enable('trust proxy');
 app.set('views', path.join(__dirname, 'views'));
 app.engine('.hbs', expressHandleBars({
     defaultLayout: 'main',

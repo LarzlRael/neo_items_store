@@ -12,7 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifiedEmail = exports.verifyCheck = exports.renderConfirmEmail = exports.sendEmailToRecoveryPassword = exports.SendEmailActivation = void 0;
+exports.passwordChanged = exports.renderRecoveryForm = exports.verifiedEmail = exports.verifyCheck = exports.renderConfirmEmail = exports.sendEmailToRecoveryPassword = exports.SendEmailActivation = void 0;
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const userModel_1 = __importDefault(require("../models/userModel"));
 const jwt_1 = require("../helpers/jwt");
@@ -34,14 +35,14 @@ const SendEmailActivation = (req, res) => __awaiter(void 0, void 0, void 0, func
     const myUrl = `${protocol}://${hostname}`;
     try {
         const { email } = req.body;
-        const token = yield jwt_1.generarJWT(email, '5M');
+        const token = yield jwt_1.generarJWT('', '5M', email);
         transporter.sendMail({
             from: 'N.E.O',
             to: email,
             subject: "Activacion de email",
             /* text: "Hello world?", // plain text body */
             html: `<p>
-            Para activar tu cuenta ingrese a <a href="${myUrl}/sendmail/confirm/${token}/${email}">verificar email</a>
+            Para activar tu cuenta ingrese a <a href="${myUrl}/sendmail/verifycheck/${token}">verificar email</a>
             </p>`, // html body
         });
         res.json({
@@ -55,16 +56,22 @@ const SendEmailActivation = (req, res) => __awaiter(void 0, void 0, void 0, func
 });
 exports.SendEmailActivation = SendEmailActivation;
 const sendEmailToRecoveryPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const hostname = req.headers.host;
+    const protocol = req.protocol;
+    const myUrl = `${protocol}://${hostname}`;
     try {
         const { email } = req.body;
         const findEmail = yield userModel_1.default.findOne({ email: email });
         if (findEmail) {
+            const token = yield jwt_1.generarJWT('', '3M', email);
             transporter.sendMail({
-                from: '"Fred Foo 👻" <foo@example.com>',
+                from: 'N.E.O',
                 to: email,
-                subject: "testing",
+                subject: "Recuperacion de contraseña",
                 /* text: "Hello world?", // plain text body */
-                html: "<b>Hello world from node mailer, yor has chossen for a testing user</b>", // html body
+                html: `<p>
+            Para recuperar su contraseña ingrese aqui <a href="${myUrl}/sendmail/recoverypasswordform/${token}">recuperar contraseña</a>
+            </p>`, // html body
             });
             res.json({
                 ok: true,
@@ -108,4 +115,37 @@ const verifiedEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     res.render('verifiedemail');
 });
 exports.verifiedEmail = verifiedEmail;
+const renderRecoveryForm = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { token } = req.params;
+    const getUserWithThatEmail = yield userModel_1.default.findOne({ email: req.email });
+    console.log(getUserWithThatEmail);
+    if (getUserWithThatEmail) {
+        return res.render('recoveryPasswordForm', { token, email: req.email });
+    }
+    else {
+        return res.send('Error');
+    }
+});
+exports.renderRecoveryForm = renderRecoveryForm;
+const passwordChanged = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+    const getUserWithThatEmail = yield userModel_1.default.findOne({ email: req.email });
+    if (getUserWithThatEmail) {
+        const salt = bcryptjs_1.default.genSaltSync();
+        getUserWithThatEmail.password = bcryptjs_1.default.hashSync(newPassword, salt);
+        yield getUserWithThatEmail.save();
+        return res.send('Contraseña cambiada correctamente');
+    }
+    else {
+        res.send('Error');
+    }
+});
+exports.passwordChanged = passwordChanged;
+/* getMyHostUrl(req:Request): string{
+const hostname = req.headers.host;
+    const protocol = req.protocol;
+
+    const myUrl = `${protocol}://${hostname}`;
+} */ 
 //# sourceMappingURL=mailController.js.map

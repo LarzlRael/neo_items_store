@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:neo_wallet/models/transactions_response.dart';
 import 'package:neo_wallet/services/socket_service.dart';
@@ -48,11 +49,13 @@ class _UserTransactionsHistoryPageState
               child: SmartRefresher(
                 onRefresh: loadHistory,
                 controller: _refreshController,
-                child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  itemCount: this._transactions.length,
-                  itemBuilder: (_, i) => this._transactions[i],
-                  /* reverse: true, */
+                child: FadeInDown(
+                  child: ListView.builder(
+                    physics: BouncingScrollPhysics(),
+                    itemCount: this._transactions.length,
+                    itemBuilder: (_, i) => this._transactions[i],
+                    /* reverse: true, */
+                  ),
                 ),
               ),
             ),
@@ -109,8 +112,5 @@ class _UserTransactionsHistoryPageState
   }
 }
 //TODO fix the sending error, with state loading  [x]
-//TODO sum the wallets in the blue containers [ok]
 
-
-//TODO update wallets after and receving
 

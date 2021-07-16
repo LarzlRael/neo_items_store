@@ -35,7 +35,6 @@ class _UserProfileState extends State<UserProfile> {
                     IconButton(
                       icon: Icon(Icons.arrow_back),
                       onPressed: () {
-                        print('volviendo atras');
                         Navigator.pop(context);
                       },
                     ),
@@ -199,7 +198,9 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   void logOut() {
-    Navigator.pushReplacementNamed(context, 'login');
     authServices.logout();
+    Navigator.pop(context);
+    Navigator.pushNamedAndRemoveUntil(context, "login", (r) => false);
+    
   }
 }

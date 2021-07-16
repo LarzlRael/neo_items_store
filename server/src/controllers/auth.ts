@@ -103,7 +103,7 @@ export const saveNewDevice = async (req: Request, res: Response) => {
         userDevices!.push(deviceId)
         await userExist?.save();
 
-        console.log('registrando nuevo id');
+
 
         res.json({
             ok: true,

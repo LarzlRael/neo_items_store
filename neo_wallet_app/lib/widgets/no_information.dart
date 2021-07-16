@@ -30,14 +30,15 @@ class NoInformation extends StatelessWidget {
             Text(message),
             SizedBox(height: 15),
             showButton
-                ? Container(
-                    width: double.infinity,
-                    child: ButtonWithIcon(
-                      label: buttonTitle ?? '',
-                      icon: this.iconButton,
-                      buttonBorderPrimary: true,
-                      onPressed: onPressed!,
-                    ),
+                ? Row(
+                    children: [
+                      ButtonWithIcon(
+                        label: buttonTitle ?? '',
+                        icon: this.iconButton,
+                        buttonBorderPrimary: true,
+                        onPressed: onPressed!,
+                      ),
+                    ],
                   )
                 : Container(),
           ],

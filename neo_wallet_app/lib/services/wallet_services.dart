@@ -82,7 +82,7 @@ class WalletServices {
     );
 
     final respBody = jsonDecode(resp.body);
-    print(respBody);
+
     return respBody['ok'];
   }
 
@@ -101,7 +101,6 @@ class WalletServices {
     );
 
     final respBody = jsonDecode(resp.body);
-    print(respBody);
     return respBody['ok'];
   }
 }

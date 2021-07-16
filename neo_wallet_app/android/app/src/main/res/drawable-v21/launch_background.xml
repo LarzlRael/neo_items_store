@@ -4,7 +4,7 @@
     <item android:drawable="@color/background" />
 
     <!-- You can insert your own image assets here -->
-    <item android:left="40dp" android:right="40dp" android:top="180dp" android:bottom="180dp">
+    <item android:left="60dp" android:right="60dp" android:top="180dp" android:bottom="180dp">
         <bitmap android:src="@drawable/icon_logo" />
     </item>
 </layer-list>

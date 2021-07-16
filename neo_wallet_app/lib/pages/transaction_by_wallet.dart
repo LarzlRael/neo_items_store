@@ -111,14 +111,15 @@ class _TransactionByWalletState extends State<TransactionByWallet> {
   }
 
   renameWallet(String idWallet, String newName) async {
-    print(newName);
-    print(idWallet);
+    /* print(newName);
+    print(idWallet); */
     /* final isOk = await this.walletServices.renameWallet(idWallet, newName); */
   }
 }
 
  //TODO add image icon and enable to change, show wallets in profile view
-// TODO Added socjets and fix the rename wallet
+ 
+// TODO Added sockets and fix the rename wallet
 //TODO added animation
 // TODO added transaction details
 

@@ -44,7 +44,7 @@ body {
     justify-content: center;
     margin: 2rem 0;
 }
-.container .confirm-container a {
+.container .confirm-container .buttonSend {
     text-decoration: none;
     padding: 1rem 4rem;
     color: white;
@@ -57,7 +57,7 @@ body {
     transition: all 0.3s;
 }
 
-.container .confirm-container a:hover {
+.container .confirm-container .buttonSend:hover {
     cursor: pointer;
     background: #2a445e;
 }
