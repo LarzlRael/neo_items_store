@@ -32,7 +32,7 @@ transporter.verify(() => {
 const SendEmailActivation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const hostname = req.headers.host;
     const protocol = req.protocol;
-    const myUrl = `${protocol}://${hostname}`;
+    const myUrl = `${protocol}://${hostname}/sendmail`;
     try {
         const { email } = req.body;
         const token = yield jwt_1.generarJWT('', '5M', email);
@@ -42,7 +42,7 @@ const SendEmailActivation = (req, res) => __awaiter(void 0, void 0, void 0, func
             subject: "Activacion de email",
             /* text: "Hello world?", // plain text body */
             html: `<p>
-            Para activar tu cuenta ingrese a <a href="${myUrl}/sendmail/verifycheck/${token}">verificar email</a>
+            Para activar tu cuenta ingrese a <a href="${myUrl}/verifycheck/${token}">verificar email</a>
             </p>`, // html body
         });
         res.json({
@@ -96,18 +96,12 @@ const renderConfirmEmail = (req, res) => __awaiter(void 0, void 0, void 0, funct
 });
 exports.renderConfirmEmail = renderConfirmEmail;
 const verifyCheck = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { token, email } = req.params;
-    const getUserWithThatEmail = yield userModel_1.default.findOne({ email });
+    const getUserWithThatEmail = yield userModel_1.default.findOne({ email: req.email });
     getUserWithThatEmail.activated = true;
     yield (getUserWithThatEmail === null || getUserWithThatEmail === void 0 ? void 0 : getUserWithThatEmail.save());
-    if (jwt_1.comprobarJWT(token)) {
-        // TODO emit the socket event
-        var io = require('socket.io');
-        res.redirect('/sendmail/verifiedemail');
-    }
-    else {
-        res.send('Error');
-    }
+    // TODO emit the socket event
+    var io = require('socket.io');
+    res.redirect('/sendmail/verifiedemail');
     /* res.render('index'); */
 });
 exports.verifyCheck = verifyCheck;

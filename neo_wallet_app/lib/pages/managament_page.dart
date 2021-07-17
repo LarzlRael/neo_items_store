@@ -30,7 +30,7 @@ class _ManagamentPageState extends State<ManagamentPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(toCapitalize(usuario.name)),
+        title: Text(usuario.name),
         centerTitle: true,
         actions: [
           IconButton(
@@ -126,7 +126,7 @@ class _ManagamentPageState extends State<ManagamentPage> {
         ],
       ),
       child: ListTile(
-        title: Text(wallet.walletName),
+        title: Text(toCapitalize(wallet.walletName)),
         subtitle: Text('${wallet.balance}'),
         trailing: Icon(Icons.edit),
         onTap: () {

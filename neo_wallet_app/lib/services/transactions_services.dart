@@ -29,7 +29,6 @@ class TransactionsServices with ChangeNotifier {
   bool _isSending = false;
 
   set isSending(bool valor) {
-    print('change value $valor');
     this._isSending = valor;
     notifyListeners();
   }

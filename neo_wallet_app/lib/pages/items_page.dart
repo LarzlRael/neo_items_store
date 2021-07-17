@@ -20,7 +20,7 @@ class ItemsPage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(toCapitalize(usuario.name)),
+          title: Text(usuario.name),
           centerTitle: true,
           elevation: 5,
           actions: [

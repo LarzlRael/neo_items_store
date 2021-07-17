@@ -61,7 +61,7 @@ class _QrPageState extends State<QrPage> {
         child: Column(
           children: [
             Text(
-              toCapitalize(usuario.name),
+              usuario.name,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

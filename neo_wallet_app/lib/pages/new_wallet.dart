@@ -6,6 +6,7 @@ import 'package:neo_wallet/helpers.dart';
 import 'package:neo_wallet/models/wallets_users_response.dart';
 import 'package:neo_wallet/services/auth_services.dart';
 import 'package:neo_wallet/services/wallet_services.dart';
+import 'package:neo_wallet/utils/utils.dart';
 import 'package:neo_wallet/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -77,7 +78,7 @@ class _NewWalletState extends State<NewWallet> {
               Navigator.pushNamed(context, 'qrPage', arguments: userWallet);
             },
             leading: Icon(Ionicons.wallet),
-            title: Text(userWallet.walletName),
+            title: Text(toCapitalize(userWallet.walletName)),
             subtitle: Text('${userWallet.balance}'),
             trailing: Icon(Icons.qr_code_2_outlined),
           ),

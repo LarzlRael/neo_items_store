@@ -1,8 +1,10 @@
-import jwt from 'jsonwebtoken';
-import { Request, Response } from 'express';
+import jwt, { verify } from 'jsonwebtoken';
+import { NextFunction, Request, Response } from 'express';
 import { IPayload } from '../interfaces/interfaces';
 import UserModel from '../models/userModel';
-export const validarJWT = (req: Request, res: Response, next: any) => {
+
+
+export const validarJWT = (req: Request, res: Response, next: NextFunction) => {
 
     //Leer token
 
@@ -30,7 +32,7 @@ export const validarJWT = (req: Request, res: Response, next: any) => {
     }
 
 }
-export const validarJWTEmail = (req: Request, res: Response, next: any) => {
+export const validarJWTEmail = (req: Request, res: Response, next: NextFunction) => {
 
     //Leer token
 
@@ -55,12 +57,11 @@ export const validarJWTEmail = (req: Request, res: Response, next: any) => {
     }
 
 }
-export const validateIfEmailExists = async (req: Request, res: Response, next: any) => {
+export const validateIfEmailExists = async (req: Request, res: Response, next: NextFunction) => {
 
-    //Leer token
     const { email } = req.body;
 
-    const verfyEmail = await UserModel.findOne({ email });
+    const verfyEmail = await UserModel.findOne({ email: req.email != null ? req.email : email });
 
     if (!verfyEmail) {
         return res.status(401).json({

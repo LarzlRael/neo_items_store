@@ -94,14 +94,23 @@ export const deleteWallet = async (req: Request, res: Response) => {
             const currentWallet = await WalletModel.findById(walletId);
 
             if (currentWallet) {
-                
+
                 if (currentWallet.balance > 0) {
                     return res.status(400).json({
                         ok: false,
                         msg: 'Esta billetara aun tiene saldo, transfieralo a otra billetara'
                     });
                 }
-                
+                console.log(currentWallet);
+
+                const getUserOwnerWallet = await UserModel.findById(currentWallet.idUser);
+
+                let walletIdTemp = walletId;
+
+                getUserOwnerWallet!.wallets = getUserOwnerWallet!.wallets.filter((wallet) => walletIdTemp != wallet);
+
+                await getUserOwnerWallet?.save();
+
                 const walletDeleted = await WalletModel.findByIdAndDelete(walletId);
                 return res.json({
                     ok: true,

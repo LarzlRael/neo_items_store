@@ -56,6 +56,7 @@ class _SendPageState extends State<SendPage> {
 
     return Scaffold(
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

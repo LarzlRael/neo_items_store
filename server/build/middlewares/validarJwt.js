@@ -57,9 +57,8 @@ const validarJWTEmail = (req, res, next) => {
 };
 exports.validarJWTEmail = validarJWTEmail;
 const validateIfEmailExists = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    //Leer token
     const { email } = req.body;
-    const verfyEmail = yield userModel_1.default.findOne({ email });
+    const verfyEmail = yield userModel_1.default.findOne({ email: req.email != null ? req.email : email });
     if (!verfyEmail) {
         return res.status(401).json({
             ok: false,

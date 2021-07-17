@@ -8,13 +8,20 @@ class TransactionsInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return FadeInLeft(
       duration: Duration(milliseconds: 250),
-      child: ListView.builder(
-        padding: EdgeInsets.only(left: 15, right: 15, bottom: 15),
-        scrollDirection: Axis.vertical,
-        itemCount: userTransaction.length,
-        itemBuilder: (BuildContext context, int i) =>
-            _createInfoBloc(context, userTransaction[i]),
-        /* children: [
+      child: this.userTransaction.length == 0
+          ? NoInformation(
+              icon: Ionicons.wallet_sharp,
+              message: 'No tienes transacciones',
+              showButton: false,
+              iconButton: Icons.send,
+            )
+          : ListView.builder(
+              padding: EdgeInsets.only(left: 15, right: 15, bottom: 15),
+              scrollDirection: Axis.vertical,
+              itemCount: userTransaction.length,
+              itemBuilder: (BuildContext context, int i) =>
+                  _createInfoBloc(context, userTransaction[i]),
+              /* children: [
                       /* _createInfoBloc(),
                       _createInfoBloc(),
                       _createInfoBloc(), */
@@ -22,7 +29,7 @@ class TransactionsInfo extends StatelessWidget {
                       
                       
                     ], */
-      ),
+            ),
     );
   }
 
