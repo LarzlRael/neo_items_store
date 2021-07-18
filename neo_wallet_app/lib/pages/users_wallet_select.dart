@@ -29,7 +29,7 @@ class _UserWalletSelectState extends State<UserWalletSelect> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(toCapitalize(usuario.name)),
+        title: Text(usuario.name),
         centerTitle: true,
       ),
       body: Container(

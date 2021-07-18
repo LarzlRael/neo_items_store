@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:neo_wallet/services/auth_services.dart';
+import 'package:neo_wallet/shared_preferences/shared_preferences.dart';
 import 'package:neo_wallet/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -41,6 +42,8 @@ class _Form extends StatefulWidget {
 }
 
 class __FormState extends State<_Form> {
+  final prefs = UserPreferences();
+
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
 
@@ -70,7 +73,7 @@ class __FormState extends State<_Form> {
             placeholder: "Ingrese su Email",
             isPassword: false,
             keyboardType: TextInputType.emailAddress,
-            textController: emailCtrl,
+            textController: emailCtrl..text = prefs.loginEmail,
           ),
           CustomInput(
             icon: Icons.lock_outline,
@@ -90,6 +93,7 @@ class __FormState extends State<_Form> {
             onPressed: authService.autenticando
                 ? null
                 : () async {
+                    prefs.loginEmail = this.emailCtrl.text;
                     FocusScope.of(context).unfocus();
                     // print(emailCtrl.text);
                     // print(passCtrl.text);

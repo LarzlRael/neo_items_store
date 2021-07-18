@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:neo_wallet/pages/new_wallet.dart';
 import 'package:neo_wallet/widgets/widgets.dart';
 
 String toCapitalize(String world) {

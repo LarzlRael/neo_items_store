@@ -23,9 +23,11 @@ router.get('/confirm/:token/:email', [
     validateIfEmailExists
 ], renderConfirmEmail);
 
-/* router.get('/verifiedemail', [], verifiedEmail); */
+router.get('/verifiedemail', [], verifiedEmail);
 
-router.get('/verifycheck/:token/:email', [], verifyCheck);
+router.get('/verifycheck/:token/', [
+    validarJWTEmail,
+    validateIfEmailExists], verifyCheck);
 
 
 router.post('/recoverypassword/', [

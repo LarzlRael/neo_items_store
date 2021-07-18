@@ -26,7 +26,7 @@ export const SendEmailActivation = async (req: Request, res: Response) => {
     const hostname = req.headers.host;
     const protocol = req.protocol;
 
-    const myUrl = `${protocol}://${hostname}`;
+    const myUrl = `${protocol}://${hostname}/sendmail`;
 
 
     try {
@@ -38,7 +38,7 @@ export const SendEmailActivation = async (req: Request, res: Response) => {
             subject: "Activacion de email", // Subject line
             /* text: "Hello world?", // plain text body */
             html: `<p>
-            Para activar tu cuenta ingrese a <a href="${myUrl}/sendmail/verifycheck/${token}">verificar email</a>
+            Para activar tu cuenta ingrese a <a href="${myUrl}/verifycheck/${token}">verificar email</a>
             </p>`, // html body
         });
         res.json({
@@ -102,25 +102,21 @@ export const renderConfirmEmail = async (req: Request, res: Response) => {
 
 export const verifyCheck = async (req: Request, res: Response) => {
 
-    const { token, email } = req.params;
 
-    const getUserWithThatEmail = await UserModel.findOne({ email });
+    const getUserWithThatEmail = await UserModel.findOne({ email: req.email });
 
     getUserWithThatEmail!.activated = true;
 
     await getUserWithThatEmail?.save();
 
-    if (comprobarJWT(token)) {
 
-        // TODO emit the socket event
+    // TODO emit the socket event
 
-        var io = require('socket.io');
-        res.redirect('/sendmail/verifiedemail');
+    var io = require('socket.io');
+    res.redirect('/sendmail/verifiedemail');
 
 
-    } else {
-        res.send('Error');
-    }
+
     /* res.render('index'); */
 }
 

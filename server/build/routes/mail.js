@@ -20,8 +20,11 @@ router.post('/', [
 router.get('/confirm/:token/:email', [
     validarJwt_1.validateIfEmailExists
 ], mailController_1.renderConfirmEmail);
-/* router.get('/verifiedemail', [], verifiedEmail); */
-router.get('/verifycheck/:token/:email', [], mailController_1.verifyCheck);
+router.get('/verifiedemail', [], mailController_1.verifiedEmail);
+router.get('/verifycheck/:token/', [
+    validarJwt_1.validarJWTEmail,
+    validarJwt_1.validateIfEmailExists
+], mailController_1.verifyCheck);
 router.post('/recoverypassword/', [
     express_validator_1.check('email', 'El email es obligatorio').isEmail(),
     middelwares_1.validarCampos,

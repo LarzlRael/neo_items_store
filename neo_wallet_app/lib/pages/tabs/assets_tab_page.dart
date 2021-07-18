@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:neo_wallet/widgets/widgets.dart';
 
 class AssetsTabPage extends StatelessWidget {
   @override

@@ -98,6 +98,11 @@ const deleteWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                         msg: 'Esta billetara aun tiene saldo, transfieralo a otra billetara'
                     });
                 }
+                console.log(currentWallet);
+                const getUserOwnerWallet = yield userModel_1.default.findById(currentWallet.idUser);
+                let walletIdTemp = walletId;
+                getUserOwnerWallet.wallets = getUserOwnerWallet.wallets.filter((wallet) => walletIdTemp != wallet);
+                yield (getUserOwnerWallet === null || getUserOwnerWallet === void 0 ? void 0 : getUserOwnerWallet.save());
                 const walletDeleted = yield walletModel_1.default.findByIdAndDelete(walletId);
                 return res.json({
                     ok: true,

@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:neo_wallet/services/auth_services.dart';
-import 'package:neo_wallet/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers.dart';
@@ -13,6 +15,8 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
   late AuthService authServices;
+
+  File? _image;
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +84,7 @@ class _UserProfileState extends State<UserProfile> {
     final size = MediaQuery.of(context).size;
 
     return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
       child: Column(
         children: [
           SafeArea(
@@ -106,27 +111,34 @@ class _UserProfileState extends State<UserProfile> {
               ),
               child: Column(
                 children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: SizedBox(
-                      child: CircleAvatar(
-                        radius: 40.0,
-                        backgroundColor: Colors.white,
+                  GestureDetector(
+                    onTap: () {
+                      _selectGalleryPhoto();
+                    },
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: SizedBox(
                         child: CircleAvatar(
-                          child: Align(
-                            alignment: Alignment.bottomRight,
-                            child: CircleAvatar(
-                              backgroundColor: Colors.white,
-                              radius: 12.0,
-                              child: Icon(
-                                Icons.camera_alt,
-                                size: 15.0,
-                                color: Color(0xFF404040),
+                          radius: 40.0,
+                          backgroundColor: Colors.white,
+                          child: CircleAvatar(
+                            child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                radius: 12.0,
+                                child: Icon(
+                                  Icons.camera_alt,
+                                  size: 15.0,
+                                  color: Color(0xFF404040),
+                                ),
                               ),
                             ),
+                            radius: 38.0,
+                            backgroundImage: this._image == null
+                                ? AssetImage('assets/black_logo.png')
+                                : Image.file(this._image!).image,
                           ),
-                          radius: 38.0,
-                          backgroundImage: AssetImage('assets/black_logo.png'),
                         ),
                       ),
                     ),
@@ -201,6 +213,24 @@ class _UserProfileState extends State<UserProfile> {
     authServices.logout();
     Navigator.pop(context);
     Navigator.pushNamedAndRemoveUntil(context, "login", (r) => false);
-    
+  }
+
+  void _selectGalleryPhoto() async {
+    _procesarImagen(ImageSource.gallery);
+  }
+
+  _procesarImagen(ImageSource origen) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.getImage(
+      source: origen,
+    );
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
   }
 }

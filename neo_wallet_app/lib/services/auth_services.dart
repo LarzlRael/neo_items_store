@@ -10,10 +10,19 @@ import 'package:neo_wallet/models/error_response.dart';
 import 'package:neo_wallet/models/login_response.dart';
 import 'package:neo_wallet/models/usuario.dart';
 import 'package:neo_wallet/models/wallets_users_response.dart';
+import 'package:neo_wallet/utils/utils.dart';
 
 class AuthService with ChangeNotifier {
   //
-  late Usuario usuario;
+  late Usuario _usuario;
+
+  Usuario get usuario {
+    this._usuario.name = toCapitalize(this._usuario.name);
+    return this._usuario;
+  }
+
+  set usuario(Usuario value) => this._usuario = value;
+
   late List<UserWallet> _userWallets;
 
   set userWallets(List<UserWallet> value) {
@@ -184,5 +193,4 @@ class AuthService with ChangeNotifier {
     this._userWallets = this.usuario.wallets;
     await this._saveToken(loginResponse.token);
   }
-  
 }
