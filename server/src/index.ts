@@ -4,6 +4,8 @@ import morgan from 'morgan';
 require('dotenv').config();
 import path from 'path';
 import expressHandleBars from 'express-handlebars';
+import passport from 'passport';
+import passportMiddleware from './middlewares/passport';
 
 import authRoutes from './routes/auth';
 import walletRoutes from './routes/wallet';
@@ -35,12 +37,14 @@ app.set('view engine', '.hbs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'))
+app.use(passport.initialize());
+passport.use(passportMiddleware);
+
 //Index server index
 const publicPath = path.resolve(__dirname, 'public');
 app.use(express.static(publicPath));
 
 //routes
-
 
 app.use('/auth', authRoutes);
 app.use('/wallet', walletRoutes);

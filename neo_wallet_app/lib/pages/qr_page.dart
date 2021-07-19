@@ -88,22 +88,23 @@ class _QrPageState extends State<QrPage> {
               height: 10,
             ),
             ElevatedButton(
-                onPressed: () async {
-                  await FlutterClipboard.copy(args.id);
+              onPressed: () async {
+                await FlutterClipboard.copy(args.id);
 
-                  showSnackBarNotification(
-                    message: 'Codigo Copiado',
-                    color: Colors.blue,
-                    context: context,
-                  );
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text('Copiar codigo'),
-                    Icon(Ionicons.copy),
-                  ],
-                ))
+                showSnackBarNotification(
+                  message: 'Codigo Copiado',
+                  color: Colors.blue,
+                  context: context,
+                );
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text('Copiar codigo'),
+                  Icon(Ionicons.copy),
+                ],
+              ),
+            ),
           ],
         ),
       ),

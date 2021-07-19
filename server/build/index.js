@@ -10,6 +10,8 @@ const morgan_1 = __importDefault(require("morgan"));
 require('dotenv').config();
 const path_1 = __importDefault(require("path"));
 const express_handlebars_1 = __importDefault(require("express-handlebars"));
+const passport_1 = __importDefault(require("passport"));
+const passport_2 = __importDefault(require("./middlewares/passport"));
 const auth_1 = __importDefault(require("./routes/auth"));
 const wallet_1 = __importDefault(require("./routes/wallet"));
 const transaction_1 = __importDefault(require("./routes/transaction"));
@@ -35,6 +37,8 @@ app.set('view engine', '.hbs');
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(morgan_1.default('dev'));
+app.use(passport_1.default.initialize());
+passport_1.default.use(passport_2.default);
 //Index server index
 const publicPath = path_1.default.resolve(__dirname, 'public');
 app.use(express_1.default.static(publicPath));

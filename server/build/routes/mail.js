@@ -1,10 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const mailController_1 = require("../controllers/mailController");
 const middelwares_1 = require("../middlewares/middelwares");
 const validarJwt_1 = require("../middlewares/validarJwt");
+const passport_1 = __importDefault(require("passport"));
 const router = express_1.Router();
 // /sendmail/
 router.post('/', [
@@ -36,5 +40,8 @@ router.post('/confirmchangepassword/:token/', [
     middelwares_1.validarCampos,
     validarJwt_1.validarJWTEmail
 ], mailController_1.passwordChanged);
+router.get('/special', passport_1.default.authenticate('jwt', { session: false }), (req, res) => {
+    res.send('success');
+});
 exports.default = router;
 //# sourceMappingURL=mail.js.map

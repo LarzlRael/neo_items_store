@@ -3,6 +3,7 @@ import { check } from 'express-validator';
 import { passwordChanged, renderConfirmEmail, renderRecoveryForm, SendEmailActivation, sendEmailToRecoveryPassword, verifiedEmail, verifyCheck } from '../controllers/mailController';
 import { validarCampos } from '../middlewares/middelwares';
 import { validarJWTEmail, validateIfEmailExists } from '../middlewares/validarJwt';
+import passport from 'passport';
 
 
 const router = Router();
@@ -44,6 +45,10 @@ router.post('/confirmchangepassword/:token/', [
     validarJWTEmail
 ], passwordChanged);
 
+
+router.get('/special', passport.authenticate('jwt', { session: false }), (req, res) => {
+    res.send('success');
+})
 
 export default router;
 

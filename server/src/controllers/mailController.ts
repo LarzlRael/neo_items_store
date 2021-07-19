@@ -32,7 +32,7 @@ export const SendEmailActivation = async (req: Request, res: Response) => {
     try {
         const { email } = req.body;
         const token = await generarJWT('', '5M', email);
-        const navigateTo = `${myUrl}/sendmail/verifycheck/${token}`;
+        const navigateTo = `${myUrl}/verifycheck/${token}`;
 
         transporter.sendMail({
             from: 'N.E.O', // sender address

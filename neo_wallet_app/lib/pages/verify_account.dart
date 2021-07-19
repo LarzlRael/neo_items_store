@@ -92,7 +92,7 @@ class _VerifyAccountState extends State<VerifyAccount> {
                 onTap: () async {
                   await this.authService.isLoggenIn();
                   if (this.authService.usuario.activated) {
-                    Navigator.pushNamed(context, 'home');
+                    Navigator.pushReplacementNamed(context, 'home');
                   } else {
                     showSnackBarNotification(
                         color: Colors.red,
@@ -111,5 +111,10 @@ class _VerifyAccountState extends State<VerifyAccount> {
 
   sendEmailVerication(BuildContext context) {
     this.mailServices.sendEmailVerification(authService.usuario.email);
+    showSnackBarNotification(
+        color: Colors.green,
+        message: 'Correo electronico enviado, verifique su email',
+        context: context);
+    /* Navigator.pop(context); */
   }
 }
