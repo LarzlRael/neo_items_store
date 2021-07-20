@@ -145,7 +145,6 @@ export const renderRecoveryForm = async (req: Request, res: Response) => {
 
 export const passwordChanged = async (req: Request, res: Response) => {
 
-    const { token } = req.params;
     const { newPassword } = req.body;
 
     const getUserWithThatEmail = await UserModel.findOne({ email: req.email });
