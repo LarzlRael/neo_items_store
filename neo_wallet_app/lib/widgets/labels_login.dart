@@ -4,8 +4,11 @@ class Labels extends StatelessWidget {
   final String route;
   final String title;
   final String subTitle;
-  const Labels(
-      {required this.route, required this.title, required this.subTitle});
+  const Labels({
+    required this.route,
+    required this.title,
+    required this.subTitle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,7 @@ class Labels extends StatelessWidget {
                   fontWeight: FontWeight.bold),
             ),
             onTap: () {
-              Navigator.pushNamed(context, route);
+              Navigator.popAndPushNamed(context, route);
             },
           ),
           SizedBox(height: 10),

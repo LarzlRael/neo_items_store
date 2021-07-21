@@ -3,7 +3,7 @@ import 'package:neo_wallet/pages/tabs/assets_tab_page.dart';
 import 'package:neo_wallet/pages/tabs/transcations_tab_page.dart';
 import 'package:neo_wallet/services/auth_services.dart';
 import 'package:neo_wallet/services/transactions_services.dart';
-import 'package:neo_wallet/utils/utils.dart';
+
 import 'package:provider/provider.dart';
 
 class ItemsPage extends StatelessWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 
-import 'package:neo_wallet/helpers.dart';
+import 'package:neo_wallet/helpers/helpers.dart';
 import 'package:neo_wallet/models/usuario.dart';
 import 'package:neo_wallet/models/wallets_users_response.dart';
 import 'package:neo_wallet/services/auth_services.dart';
@@ -105,7 +105,7 @@ class _SendPageState extends State<SendPage> {
               ],
             ),
           ),
-          _createInput(walletDirectionToSend, 'Ingrese direccion de recibo',
+          _createInput(walletDirectionToSend, 'Ingrese dirección de recibo',
               TextInputType.text),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -4,7 +4,7 @@ import 'package:neo_wallet/services/socket_service.dart';
 import 'package:provider/provider.dart';
 
 import 'package:neo_wallet/navigation/bottom_navigation.dart';
-import 'package:neo_wallet/pages/login_page.dart';
+import 'package:neo_wallet/pages/auth_pages/login_page.dart';
 import 'package:neo_wallet/services/auth_services.dart';
 
 class LoadingPage extends StatelessWidget {

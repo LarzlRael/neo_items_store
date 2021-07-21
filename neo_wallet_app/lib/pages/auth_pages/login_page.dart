@@ -5,7 +5,7 @@ import 'package:neo_wallet/shared_preferences/shared_preferences.dart';
 import 'package:neo_wallet/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '../helpers.dart';
+import '../../helpers/helpers.dart';
 
 class LoginPage extends StatelessWidget {
   @override

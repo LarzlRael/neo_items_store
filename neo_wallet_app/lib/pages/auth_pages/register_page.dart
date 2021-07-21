@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:neo_wallet/helpers.dart';
+import 'package:neo_wallet/helpers/helpers.dart';
 import 'package:neo_wallet/services/auth_services.dart';
 import 'package:neo_wallet/widgets/widgets.dart';
 import 'package:provider/provider.dart';

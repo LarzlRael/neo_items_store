@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 
-import 'package:neo_wallet/pages/managament_page.dart';
-import 'package:neo_wallet/pages/user_transactions_history_page.dart';
-import 'package:neo_wallet/pages/wallet_page.dart';
+import 'package:neo_wallet/pages/bottom_navigation/managament_page.dart';
+import 'package:neo_wallet/pages/bottom_navigation/user_transactions_history_page.dart';
+import 'package:neo_wallet/pages/bottom_navigation/wallet_page.dart';
 
 class BottomNavigation extends StatefulWidget {
   @override
