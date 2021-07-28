@@ -119,11 +119,6 @@ class _UserWalletSelectState extends State<UserWalletSelect> {
     );
   }
 
-  void logOut() {
-    Navigator.pushReplacementNamed(context, 'login');
-    authService.logout();
-  }
-
   void _refreshWallets() async {
     this.authService.userWallets = await this.walletServices.getUsersWallets();
     await Future.delayed(Duration(milliseconds: 1000));

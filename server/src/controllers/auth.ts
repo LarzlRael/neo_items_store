@@ -7,7 +7,6 @@ import { generarJWT } from '../helpers/jwt';
 
 export const registerUser = async (req: Request, res: Response) => {
 
-
     const { email, password } = req.body;
 
     try {
@@ -103,14 +102,12 @@ export const saveNewDevice = async (req: Request, res: Response) => {
         userDevices!.push(deviceId)
         await userExist?.save();
 
-
-
-        res.json({
+        return res.json({
             ok: true,
             msg: 'nuevo id de dispositivo registrado'
         });
     } else {
-        res.json({
+        return res.json({
             ok: false,
             msg: 'El id ya fue registado'
         });
@@ -133,5 +130,18 @@ const vertifyUserBearer = async (idDevice: string) => {
 
     await userExist[0].save();
 
+}
+
+export const logout = async (req: Request, res: Response) => {
+    const { deviceId } = req.params;
+
+    const getUserListDevices = await Usuario.findById(req.uid);
+
+
+    getUserListDevices!.devices = getUserListDevices!.devices?.filter((device) => deviceId != device);
+
+    await getUserListDevices?.save();
+
+    return res.json({ ok: true, msg:'Logout'})
 }
 

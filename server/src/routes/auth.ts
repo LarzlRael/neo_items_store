@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { check } from "express-validator";
 
-import { registerUser, login, renewToken, saveNewDevice } from '../controllers/auth';
+import { registerUser, login, renewToken, saveNewDevice, logout } from '../controllers/auth';
 
 import { validarCampos } from "../middlewares/middelwares";
 import { validarJWT } from '../middlewares/validarJwt';
@@ -29,9 +29,12 @@ router.post('/saveNewDevice', [
     validarJWT
 ], saveNewDevice);
 
+router.get('/logout/:deviceId', [
 
-
-
+    check('deviceId', 'ingrese id de dispositivo').not().isEmpty(),
+    validarCampos,
+    validarJWT
+], logout);
 
 
 

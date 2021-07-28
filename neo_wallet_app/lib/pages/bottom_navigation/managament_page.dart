@@ -140,10 +140,6 @@ class _ManagamentPageState extends State<ManagamentPage> {
     );
   }
 
-  void logOut() {
-    Navigator.pushReplacementNamed(context, 'login');
-    authService.logout();
-  }
 
   void _refreshWallets() async {
     this.authService.userWallets = await this.walletServices.getUsersWallets();

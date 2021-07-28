@@ -101,7 +101,6 @@ export const deleteWallet = async (req: Request, res: Response) => {
                         msg: 'Esta billetara aun tiene saldo, transfieralo a otra billetara'
                     });
                 }
-                console.log(currentWallet);
 
                 const getUserOwnerWallet = await UserModel.findById(currentWallet.idUser);
 
@@ -112,6 +111,7 @@ export const deleteWallet = async (req: Request, res: Response) => {
                 await getUserOwnerWallet?.save();
 
                 const walletDeleted = await WalletModel.findByIdAndDelete(walletId);
+
                 return res.json({
                     ok: true,
                     msg: 'billetera Eliminada correctamente',

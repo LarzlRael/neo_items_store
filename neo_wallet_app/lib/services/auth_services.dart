@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:neo_wallet/enviroments/variables_enviroments.dart'
@@ -39,6 +40,12 @@ class AuthService with ChangeNotifier {
   set autenticando(bool valor) {
     this._authtecating = valor;
     notifyListeners();
+  }
+
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  Future<String> getDeviceId() async {
+    return await messaging.getToken() ?? '';
   }
 
   double balance = 0;
@@ -184,7 +191,16 @@ class AuthService with ChangeNotifier {
   }
 
   Future logout() async {
+    final deviceId = await this.getDeviceId();
+    final resp = await http.get(
+      Uri.parse('${Enviroments.serverHttpUrl}/auth/logout/$deviceId'),
+      headers: {
+        'Content-type': 'application/json',
+        'x-token': await AuthService.getToken(),
+      },
+    );
     await _storage.delete(key: 'token');
+    
   }
 
   void saveUserinfo(String responsebody) async {
