@@ -41,7 +41,7 @@ app.use(passport.initialize());
 passport.use(passportMiddleware);
 
 //Index server index
-const publicPath = path.resolve(__dirname, 'public');
+const publicPath = path.resolve(__dirname, '../public');
 app.use(express.static(publicPath));
 
 //routes
